@@ -215,26 +215,6 @@ tbody tr:hover {
   align-items: center;
   gap: 0.9rem;
   flex-wrap: wrap;
-  position: sticky;
-  top: 0;
-  z-index: 80;
-  background: linear-gradient(180deg, rgba(13, 30, 52, 0.98), rgba(10, 25, 44, 0.95));
-  border: 1px solid var(--line);
-  border-radius: 0 0 16px 16px;
-  border-top: 0;
-  padding: 0.75rem 0.85rem 0.82rem;
-  box-shadow: 0 12px 24px rgba(6, 15, 29, 0.3);
-  backdrop-filter: blur(10px);
-}
-
-.profile-topbar::after {
-  content: "";
-  position: absolute;
-  left: 1rem;
-  right: 1rem;
-  bottom: -1px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(104, 201, 255, 0.55), transparent);
 }
 
 .profile-company {
@@ -297,7 +277,6 @@ tbody tr:hover {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.1rem;
-  margin-top: 0.2rem;
 }
 
 .profile-page {
@@ -520,13 +499,6 @@ tbody tr:hover {
 .mini-metric-value {
   font-weight: 800;
   font-size: 0.89rem;
-}
-
-.mini-metric-delta {
-  display: block;
-  margin-top: 0.15rem;
-  font-size: 0.75rem;
-  font-weight: 700;
 }
 
 .profile-panel {
@@ -808,165 +780,4 @@ a {
   .supplier-detail-metrics {
     grid-template-columns: repeat(2, minmax(130px, 1fr));
   }
-}
-
-/* Aurora variant overrides */
-:root {
-  --bg: #071424;
-  --surface: #0d1e34;
-  --surface-strong: #102842;
-  --text: #e8f1ff;
-  --muted: #9eb3cd;
-  --accent: #39d0ff;
-  --accent-soft: rgba(57, 208, 255, 0.16);
-  --line: #234466;
-  --good: #4de4a8;
-  --bad: #ff7f8f;
-  --shadow: 0 26px 40px rgba(0, 7, 16, 0.45);
-}
-
-body {
-  font-family: "Space Grotesk", "Avenir Next", "Segoe UI", sans-serif;
-  color: var(--text);
-  background: radial-gradient(circle at 10% 14%, rgba(0, 174, 255, 0.26) 0%, transparent 38%),
-    radial-gradient(circle at 90% 87%, rgba(85, 255, 198, 0.2) 0%, transparent 42%),
-    linear-gradient(160deg, #040d1a 0%, #071424 40%, #0a1d32 100%);
-}
-
-h1,
-h2,
-h3,
-h4,
-.profile-name {
-  font-family: "Sora", "Space Grotesk", sans-serif;
-  letter-spacing: 0.005em;
-}
-
-.bg-orb {
-  opacity: 0.42;
-}
-
-.bg-orb-a {
-  background: #19b8ff;
-}
-
-.bg-orb-b {
-  background: #44f0b4;
-}
-
-.kicker {
-  color: #67deff;
-}
-
-.subtitle,
-.panel-header p,
-.metric-label,
-.op-metric-label,
-.op-metric-note,
-.mini-metric-label,
-.top-brands-coverage,
-.news-date {
-  color: var(--muted);
-}
-
-.panel,
-.profile-panel,
-.content-block,
-.table-block,
-.split-card,
-.profile-main,
-.category-chart-wrap,
-.market-group {
-  background: linear-gradient(165deg, rgba(14, 32, 53, 0.95), rgba(11, 26, 44, 0.95));
-  border-color: #1f3f5f;
-  box-shadow: var(--shadow);
-}
-
-.panel-header,
-.section-head {
-  background: rgba(14, 34, 56, 0.9);
-  border-bottom-color: #204665;
-}
-
-.dashboard-search,
-.ghost-btn,
-.profile-toggle,
-.op-metric,
-.metric-card,
-.mini-metric,
-.profile-tile {
-  background: #102741;
-  color: var(--text);
-  border-color: #2d5172;
-}
-
-.dashboard-search::placeholder {
-  color: #90a7c0;
-}
-
-.toggle-btn {
-  color: #a9c0d9;
-}
-
-.toggle-btn.active {
-  background: #1a3b5d;
-  color: #eaf6ff;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
-}
-
-th {
-  background: #0f2a45;
-  color: #d8e9ff;
-}
-
-th,
-td {
-  border-bottom-color: #23486b;
-}
-
-tbody tr:hover {
-  background: rgba(62, 147, 205, 0.16);
-}
-
-.row-link,
-a {
-  color: #59d8ff;
-}
-
-.supplier-detail-name,
-.mini-metric-value,
-.metric-value,
-.op-metric-value {
-  color: #ebf5ff;
-}
-
-.mini-metric-value.value-up {
-  color: var(--good);
-}
-
-.mini-metric-value.value-down {
-  color: var(--bad);
-}
-
-.supplier-detail-tile {
-  border-color: #2a4a69;
-  background: linear-gradient(145deg, #0f2741 0%, #123352 58%, #0e2b49 100%);
-}
-
-.supplier-detail-tile::before {
-  background: linear-gradient(180deg, #39d0ff, #4de4a8, #8cf2ff);
-}
-
-.market-group h3 {
-  color: #81e6ff;
-}
-
-.summary-block,
-.source-block {
-  background: rgba(15, 36, 59, 0.95);
-}
-
-.total-row td {
-  background: #12314f;
-  border-top-color: #3a6287;
 }

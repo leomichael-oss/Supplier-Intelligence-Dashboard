@@ -215,26 +215,6 @@ tbody tr:hover {
   align-items: center;
   gap: 0.9rem;
   flex-wrap: wrap;
-  position: sticky;
-  top: 0;
-  z-index: 80;
-  background: linear-gradient(180deg, rgba(13, 30, 52, 0.98), rgba(10, 25, 44, 0.95));
-  border: 1px solid var(--line);
-  border-radius: 0 0 16px 16px;
-  border-top: 0;
-  padding: 0.75rem 0.85rem 0.82rem;
-  box-shadow: 0 12px 24px rgba(6, 15, 29, 0.3);
-  backdrop-filter: blur(10px);
-}
-
-.profile-topbar::after {
-  content: "";
-  position: absolute;
-  left: 1rem;
-  right: 1rem;
-  bottom: -1px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(104, 201, 255, 0.55), transparent);
 }
 
 .profile-company {
@@ -297,7 +277,6 @@ tbody tr:hover {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.1rem;
-  margin-top: 0.2rem;
 }
 
 .profile-page {

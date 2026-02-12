@@ -1256,15 +1256,23 @@ let profileTabTransitioning = false;
 let searchTerm = "";
 
 function currency(value) {
+  if (Math.abs(value) >= 1000000) {
+    const sign = value < 0 ? "-" : "";
+    return `${sign}$${(Math.abs(value) / 1000000).toFixed(1)}M`;
+  }
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     notation: "compact",
-    maximumFractionDigits: 2
+    maximumFractionDigits: 0
   }).format(value);
 }
 
 function moneyPlain(value) {
+  if (Math.abs(value) >= 1000000) {
+    const sign = value < 0 ? "-" : "";
+    return `${sign}$${(Math.abs(value) / 1000000).toFixed(1)}M`;
+  }
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -1360,12 +1368,12 @@ function renderDashboardDetail() {
                 <div class="supplier-detail-name">${supplier.name}</div>
               </div>
               <div class="supplier-detail-metrics">
-                <div class="mini-metric"><span class="mini-metric-label">Sales</span><span class="mini-metric-value">${currency(supplier.internal.sales)}</span></div>
-                <div class="mini-metric"><span class="mini-metric-label">Margin</span><span class="mini-metric-value">${currency(supplier.internal.margin)}</span></div>
-                <div class="mini-metric"><span class="mini-metric-label">Tonnage</span><span class="mini-metric-value">${numberCompact(supplier.internal.tonnage)} t</span></div>
-                <div class="mini-metric"><span class="mini-metric-label">Service Level</span><span class="mini-metric-value">${supplier.internal.serviceLevel.toFixed(1)}%</span></div>
-                <div class="mini-metric"><span class="mini-metric-label">AIP</span><span class="mini-metric-value">$${supplier.internal.aip.toFixed(2)}</span></div>
-                <div class="mini-metric"><span class="mini-metric-label">AIC</span><span class="mini-metric-value">$${supplier.internal.aic.toFixed(2)}</span></div>
+                <div class="mini-metric"><span class="mini-metric-label">Sales</span><span class="mini-metric-value">${currency(supplier.internal.sales)}</span><span class="mini-metric-delta ${yoyClass(supplier.internal.salesYoy)}">${pct(supplier.internal.salesYoy)} YoY</span></div>
+                <div class="mini-metric"><span class="mini-metric-label">Margin</span><span class="mini-metric-value">${currency(supplier.internal.margin)}</span><span class="mini-metric-delta ${yoyClass(supplier.internal.marginYoy)}">${pct(supplier.internal.marginYoy)} YoY</span></div>
+                <div class="mini-metric"><span class="mini-metric-label">Tonnage</span><span class="mini-metric-value">${numberCompact(supplier.internal.tonnage)} t</span><span class="mini-metric-delta ${yoyClass(supplier.internal.tonnageYoy)}">${pct(supplier.internal.tonnageYoy)} YoY</span></div>
+                <div class="mini-metric"><span class="mini-metric-label">Service Level</span><span class="mini-metric-value">${supplier.internal.serviceLevel.toFixed(1)}%</span><span class="mini-metric-delta ${yoyClass(supplier.internal.serviceYoy)}">${pct(supplier.internal.serviceYoy)} YoY</span></div>
+                <div class="mini-metric"><span class="mini-metric-label">AIP</span><span class="mini-metric-value">$${supplier.internal.aip.toFixed(2)}</span><span class="mini-metric-delta ${yoyClass(supplier.internal.aipYoy)}">${pct(supplier.internal.aipYoy)} YoY</span></div>
+                <div class="mini-metric"><span class="mini-metric-label">AIC</span><span class="mini-metric-value">$${supplier.internal.aic.toFixed(2)}</span><span class="mini-metric-delta ${yoyClass(supplier.internal.aicYoy)}">${pct(supplier.internal.aicYoy)} YoY</span></div>
                 <div class="mini-metric"><span class="mini-metric-label">Proposed $</span><span class="mini-metric-value">${inflight ? moneyPlain(inflight.proposed) : "-"}</span></div>
                 <div class="mini-metric"><span class="mini-metric-label">Market Cap</span><span class="mini-metric-value">${supplier.external.marketCapLabel}</span></div>
               </div>
@@ -1599,7 +1607,7 @@ function openProfile(id) {
   renderProfileTiles(supplier.internal);
   renderTopBrands(supplier.internal.topBrands, supplier.internal.sales);
   renderCategoryTable(supplier.internal.categories);
-  renderCommodityTable(supplier.internal.commodities);
+  renderCommodityTable(supplier.internal.commodities, supplier.internal.sales);
 
   renderBullets("external-summary", supplier.external.summary);
   renderOperationalMetrics("external-top-metrics", [
@@ -1661,7 +1669,7 @@ function renderInflight(rows) {
     .join("");
 }
 
-function renderCommodityTable(rows) {
+function renderCommodityTable(rows, supplierSales) {
   const tbody = document.querySelector("#commodity-table tbody");
   tbody.innerHTML = rows
     .map(
@@ -1670,6 +1678,8 @@ function renderCommodityTable(rows) {
         <td>${r.portion}%</td>
         <td class="${yoyClass(r.yoy)}">${pct(r.yoy)}</td>
         <td class="${yoyClass(r.qoq)}">${pct(r.qoq)}</td>
+        <td class="${yoyClass(r.yoy)}">${moneyPlain((supplierSales * r.portion * r.yoy) / 10000)}</td>
+        <td class="${yoyClass(r.qoq)}">${moneyPlain((supplierSales * r.portion * r.qoq) / 10000)}</td>
       </tr>`
     )
     .join("");
@@ -1691,8 +1701,8 @@ function renderHistory(rows) {
       return `<tr>
           <td>${r.date}</td>
           <td>${moneyPlain(r.proposed)}</td>
-          <td>${moneyPlain(r.accepted)}</td>
           <td>${moneyPlain(r.justified)}</td>
+          <td>${moneyPlain(r.accepted)}</td>
           <td>${pct(r.proposedPct)}</td>
           <td>${pct(r.justifiedPct)}</td>
           <td>${pct(r.acceptedPct)}</td>
@@ -1704,8 +1714,8 @@ function renderHistory(rows) {
   const totalRow = `<tr class="total-row">
       <td>TOTAL</td>
       <td>${moneyPlain(sumProposed)}</td>
-      <td>${moneyPlain(sumAccepted)}</td>
       <td>${moneyPlain(sumJustified)}</td>
+      <td>${moneyPlain(sumAccepted)}</td>
       <td>${pct(sumProposedPct)}</td>
       <td>${pct(sumJustifiedPct)}</td>
       <td>${pct(sumAcceptedPct)}</td>
