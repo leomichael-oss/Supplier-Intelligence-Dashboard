@@ -1256,6 +1256,16 @@ let dashboardTransitioning = false;
 let profileTabTransitioning = false;
 let searchTerm = "";
 
+function assetUrl(path) {
+  if (!path || /^https?:\/\//.test(path) || path.startsWith("data:")) return path;
+  const clean = path.replace(/^\.?\//, "");
+  if (window.location.hostname.endsWith("github.io")) {
+    const repo = window.location.pathname.split("/").filter(Boolean)[0] || "";
+    return `/${repo}/${clean}`;
+  }
+  return `/${clean}`;
+}
+
 function currency(value) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -1597,7 +1607,7 @@ function openProfile(id) {
 
   profileName.textContent = `${supplier.name} - Supplier Profile`;
   document.title = `${supplier.name} - Supplier Profile`;
-  profileLogo.src = supplier.logoUrl;
+  profileLogo.src = assetUrl(supplier.logoUrl);
   profileLogo.alt = `${supplier.name} logo`;
   profileLogo.onerror = () => {
     profileLogo.onerror = null;
