@@ -1248,12 +1248,33 @@ const dashToggleDetailBtn = document.getElementById("dash-toggle-detail");
 const dashboardSummaryView = document.getElementById("dashboard-summary-view");
 const dashboardDetailView = document.getElementById("dashboard-detail-view");
 const dashboardSearchInput = document.getElementById("dashboard-search");
+const themeToggleBtn = document.getElementById("theme-toggle");
 
 let sortState = { key: "sales", direction: "desc" };
 let dashboardMode = "summary";
 let dashboardTransitioning = false;
 let profileTabTransitioning = false;
 let searchTerm = "";
+const THEME_STORAGE_KEY = "supplier-intel-theme";
+
+function applyTheme(theme) {
+  const isLight = theme === "light";
+  document.body.classList.toggle("light-mode", isLight);
+  if (!themeToggleBtn) return;
+  themeToggleBtn.textContent = isLight ? "Dark Mode" : "Light Mode";
+  themeToggleBtn.setAttribute("aria-pressed", isLight ? "true" : "false");
+}
+
+function initThemeToggle() {
+  const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+  applyTheme(savedTheme === "light" ? "light" : "dark");
+  if (!themeToggleBtn) return;
+  themeToggleBtn.addEventListener("click", () => {
+    const nextTheme = document.body.classList.contains("light-mode") ? "dark" : "light";
+    localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+    applyTheme(nextTheme);
+  });
+}
 
 function currency(value) {
   if (Math.abs(value) >= 1000000) {
@@ -1755,5 +1776,6 @@ dashboardSearchInput.addEventListener("input", () => {
   if (dashboardMode === "detail") renderDashboardDetail();
 });
 
+initThemeToggle();
 renderTable();
 setDashboardMode(dashboardMode, { instant: true });
