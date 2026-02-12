@@ -1238,7 +1238,6 @@ const tableBody = document.querySelector("#supplier-table tbody");
 const dashboardView = document.getElementById("dashboard-view");
 const profileView = document.getElementById("profile-view");
 const profileName = document.getElementById("profile-name");
-const profileLogo = document.getElementById("profile-logo");
 const backBtn = document.getElementById("back-btn");
 const internalPanel = document.getElementById("internal-panel");
 const externalPanel = document.getElementById("external-panel");
@@ -1255,47 +1254,6 @@ let dashboardMode = "summary";
 let dashboardTransitioning = false;
 let profileTabTransitioning = false;
 let searchTerm = "";
-
-function assetUrl(path) {
-  if (!path || /^https?:\/\//.test(path) || path.startsWith("data:")) return path;
-  const clean = path.replace(/^\.?\//, "");
-  if (window.location.hostname.endsWith("github.io")) {
-    const repo = window.location.pathname.split("/").filter(Boolean)[0] || "";
-    return `/${repo}/${clean}`;
-  }
-  return `/${clean}`;
-}
-
-function logoCandidates(path) {
-  if (!path) return [];
-  if (/^https?:\/\//.test(path) || path.startsWith("data:")) return [path];
-  const clean = path.replace(/^\.?\//, "");
-  const localRepo = window.location.pathname.split("/").filter(Boolean)[0] || "";
-  const candidates = [
-    assetUrl(clean),
-    clean,
-    `./${clean}`,
-    `/${clean}`,
-    localRepo ? `/${localRepo}/${clean}` : ""
-  ].filter(Boolean);
-  return [...new Set(candidates)];
-}
-
-function setProfileLogo(supplier) {
-  const candidates = logoCandidates(supplier.logoUrl);
-  let index = 0;
-  const tryNext = () => {
-    if (index >= candidates.length) {
-      profileLogo.onerror = null;
-      profileLogo.src = logoFallbackDataUrl(supplier.name);
-      return;
-    }
-    const nextSrc = candidates[index++];
-    profileLogo.onerror = tryNext;
-    profileLogo.src = nextSrc;
-  };
-  tryNext();
-}
 
 function currency(value) {
   return new Intl.NumberFormat("en-US", {
@@ -1433,21 +1391,6 @@ function renderDashboardDetail() {
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function initials(name) {
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0].toUpperCase())
-    .join("");
-}
-
-function logoFallbackDataUrl(name) {
-  const text = initials(name);
-  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'><rect width='100%' height='100%' fill='#f1e8d7'/><text x='50%' y='54%' font-family='Arial, sans-serif' font-size='34' text-anchor='middle' fill='#7a4a1e' font-weight='700'>${text}</text></svg>`;
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 
 async function setDashboardMode(mode, opts = {}) {
@@ -1638,9 +1581,6 @@ function openProfile(id) {
 
   profileName.textContent = `${supplier.name} - Supplier Profile`;
   document.title = `${supplier.name} - Supplier Profile`;
-  setProfileLogo(supplier);
-  profileLogo.alt = `${supplier.name} logo`;
-  profileLogo.style.display = "block";
 
   const internalTopMetrics = [
     { label: "Sales", value: currency(supplier.internal.sales), delta: supplier.internal.salesYoy, deltaLabel: "YoY" },

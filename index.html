@@ -62,7 +62,6 @@
         <div class="profile-topbar">
           <button id="back-btn" class="ghost-btn">Back to Dashboard</button>
           <div class="profile-company">
-            <img id="profile-logo" class="profile-logo" src="" alt="" />
             <div id="profile-name" class="profile-name"></div>
           </div>
           <div class="profile-toggle" role="tablist" aria-label="Profile section toggle">
@@ -123,8 +122,22 @@
 
             <div class="split-card">
               <div class="profile-main profile-block">
-                <h3>Profile</h3>
+                <h3>Product Portfolio</h3>
                 <div id="profile-tiles" class="profile-tiles"></div>
+                <h4>Commodity Exposure</h4>
+                <div class="table-wrap compact-table-wrap">
+                  <table id="commodity-table">
+                    <thead>
+                      <tr>
+                        <th>Commodity</th>
+                        <th>Est. Portion of Portfolio</th>
+                        <th>YoY % Change</th>
+                        <th>QoQ % Change</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
               </div>
               <div class="profile-main profile-block">
                 <h4>Top 5 Brands</h4>
@@ -168,22 +181,6 @@
               </div>
             </div>
 
-            <div class="table-block">
-              <h3>Commodity Exposure</h3>
-              <div class="table-wrap compact-table-wrap">
-                <table id="commodity-table">
-                  <thead>
-                    <tr>
-                      <th>Commodity</th>
-                      <th>Est. Portion of Portfolio</th>
-                      <th>YoY % Change</th>
-                      <th>QoQ % Change</th>
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                </table>
-              </div>
-            </div>
           </article>
 
           <article id="external-panel" class="panel profile-panel profile-page">
