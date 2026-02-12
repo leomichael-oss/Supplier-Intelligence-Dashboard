@@ -730,6 +730,12 @@ h4 {
   line-height: 1.5;
 }
 
+.section-intro {
+  margin: 0 0 0.6rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
 .compact-list li {
   margin-bottom: 0.24rem;
 }

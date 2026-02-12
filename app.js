@@ -1,5 +1,334 @@
+const ESG_KEYWORDS = [
+  "esg",
+  "sustainab",
+  "climate",
+  "carbon",
+  "emission",
+  "renewable",
+  "recycling",
+  "recyclable",
+  "waste",
+  "water",
+  "deforestation",
+  "human rights",
+  "labor",
+  "safety",
+  "health",
+  "nutrition",
+  "governance",
+  "board",
+  "compliance",
+  "food color"
+];
+
+function toTimestamp(value) {
+  const ts = Date.parse(value || "");
+  return Number.isNaN(ts) ? 0 : ts;
+}
+
+function sortByRecency(items = []) {
+  return [...items].sort((a, b) => toTimestamp(b.date) - toTimestamp(a.date));
+}
+
+const ESG_LIBRARY = {
+  "nestle": {
+    summary:
+      "Nestle's ESG exposure is concentrated in product health, water stewardship, and human-rights risk in agricultural supply chains. Current actions emphasize reformulation, climate/water reporting, and due-diligence controls in sourcing.",
+    stories: [
+      {
+        date: "2025-06-25",
+        summary: "Nestle announced it will remove synthetic food colors from its U.S. food and beverage portfolio, reflecting nutrition and consumer-health pressure.",
+        url: "https://apnews.com/article/nestle-food-colors-artificial-rfk-jr-79765eb339e1f4f7ef4e84fcd59ce5f6"
+      },
+      {
+        date: "2025-02-13",
+        summary: "Nestle's sustainability performance reporting outlines progress and remaining gaps across GHG, deforestation, water, and responsible sourcing metrics.",
+        url: "https://www.nestle.com/sustainability/performance-reporting"
+      },
+      {
+        date: "2025-01-15",
+        summary: "Nestle maintains human-rights disclosures focused on supply-chain due diligence, grievance mechanisms, and remediation governance.",
+        url: "https://www.nestle.com/sustainability/human-rights"
+      }
+    ]
+  },
+  "kraft-heinz": {
+    summary:
+      "Kraft Heinz's main ESG pressure points are packaging circularity and emissions reduction while keeping products affordable and nutritious. The company has centered its ESG execution on packaging redesign, resource efficiency, and reporting transparency.",
+    stories: [
+      {
+        date: "2023-10-16",
+        summary: "Kraft Heinz published its ESG report, detailing progress on hunger relief, nutrition reformulation, energy and waste intensity, and packaging transitions.",
+        url: "https://news.kraftheinzcompany.com/press-releases-details/2023/Kraft-Heinz-Releases-2023-Environmental-Social-Governance-Report-Revealing-Continued-Progress-Toward-Goals-Across-Three-Priority-Pillars/default.aspx"
+      },
+      {
+        date: "2023-07-31",
+        summary: "Kraft Heinz set a target to reduce virgin plastic use by 20% by 2030, with portfolio-specific actions such as higher recycled-content packaging.",
+        url: "https://news.kraftheinzcompany.com/press-releases-details/2023/Kraft-Heinz-Announces-Goal-to-Reduce-the-Use-of-Virgin-Plastic-Globally-by-20-Percent--or-more-than-100-Million-Pounds--by-2030/default.aspx"
+      },
+      {
+        date: "2023-01-01",
+        summary: "The Heinz sustainability platform summarizes ongoing priorities in soil health, water use, packaging recyclability, and energy transition.",
+        url: "https://www.heinz.com/sustainability/"
+      }
+    ]
+  },
+  "pepsico": {
+    summary:
+      "PepsiCo faces ESG scrutiny around packaging waste, climate delivery credibility, and portfolio nutrition outcomes. Management is responding with updated pep+ targets, disclosures on progress, and legal defense against plastics-related claims.",
+    stories: [
+      {
+        date: "2025-08-28",
+        summary: "PepsiCo released its 2024 ESG Summary with updates on regenerative agriculture, renewable electricity, water replenishment, packaging, and nutrition goals.",
+        url: "https://www.pepsico.com/newsroom/press-releases/2025/pepsico-reports-2024-progress-against-pepsico-positive-pep-sustainability-and-nutrition-goals"
+      },
+      {
+        date: "2025-05-22",
+        summary: "PepsiCo revised climate, water, agriculture, and packaging goals under pep+, reframing timelines and target design for execution realism.",
+        url: "https://www.pepsico.com/newsroom/press-releases/2025/PepsiCo-refines-sustainability-goals-to-position-business-for-the-long-term"
+      },
+      {
+        date: "2024-10-31",
+        summary: "Los Angeles County sued PepsiCo and Coca-Cola over allegations tied to plastic-bottle recyclability and pollution messaging.",
+        url: "https://apnews.com/article/c326225a08b2a2778afdd27d3db2d628"
+      }
+    ]
+  },
+  "procter-gamble": {
+    summary:
+      "P&G's ESG profile is dominated by emissions reduction in operations and supply chain, responsible forest and palm sourcing, and disclosure quality. The company is positioning ESG as part of long-term brand resilience and input-risk management.",
+    stories: [
+      {
+        date: "2025-09-23",
+        summary: "P&G published its 2024 Citizenship Report with updated disclosures on environmental sustainability, ethics, and social impact programs.",
+        url: "https://us.pg.com/citizenship/"
+      },
+      {
+        date: "2024-12-01",
+        summary: "P&G highlighted progress in responsible palm sourcing and received RSPO recognition, reinforcing supply-chain governance focus.",
+        url: "https://www.pgchemicals.com/news/sustainability/dec-2024-pgs-journey-to-palm-oil-shared-responsibility-excellence"
+      },
+      {
+        date: "2024-06-30",
+        summary: "P&G's ESG climate portal tracks progress on Scope 1/2 reductions, renewable electricity, and supply-chain decarbonization intensity.",
+        url: "https://www.pginvestor.com/esg/environmental/climate/default.aspx"
+      }
+    ]
+  },
+  "maple-leaf": {
+    summary:
+      "Maple Leaf's ESG exposure is concentrated in protein-system emissions, animal welfare expectations, and operational safety. The company addresses this through integrated disclosure, regenerative agriculture programs, and welfare/process investments.",
+    stories: [
+      {
+        date: "2025-06-05",
+        summary: "Maple Leaf released its 2024 Integrated Report detailing emissions progress, regenerative acreage expansion, and landfill-diversion performance.",
+        url: "https://www.prnewswire.com/news-releases/maple-leaf-foods-releases-2024-integrated-report-highlighting-sustainability-and-strategic-achievements-302474709.html"
+      },
+      {
+        date: "2025-06-05",
+        summary: "The 2024 integrated report provides detailed disclosures on animal care standards, social metrics, and decarbonization performance.",
+        url: "https://www.mapleleaffoods.com/wp-content/uploads/sites/6/2025/06/2024_MLF_Integrated-Report_EN.pdf"
+      },
+      {
+        date: "2024-10-30",
+        summary: "Maple Leaf linked public engagement campaigns to environmental behavior change messaging and broader sustainability commitments.",
+        url: "https://mapleleaffoods.mediaroom.com/2024-10-30-Maple-Leaf-Foods-launches-eco-conscious-Grow-Your-Own-Greens-challenge-to-celebrate-its-third-annual-Little-Changes-Day"
+      }
+    ]
+  },
+  "saputo": {
+    summary:
+      "Saputo's key ESG issues are dairy value-chain emissions, water use, and land-use/deforestation exposure in upstream commodities. Recent disclosures emphasize SBTi-aligned targets and completion of a multi-year ESG cycle.",
+    stories: [
+      {
+        date: "2025-06-09",
+        summary: "Saputo issued its 2025 Promise Report with updates on climate performance, people metrics, and responsible sourcing initiatives.",
+        url: "https://saputo.gcs-web.com/news-releases/news-release-details/saputo-issues-its-2025-promise-report"
+      },
+      {
+        date: "2025-06-09",
+        summary: "Saputo reported climate progress and published validated 2030 science-based targets, including Scope 1, 2, and FLAG Scope 3 commitments.",
+        url: "https://saputo.com/en/our-promise/environment/energy-ghg"
+      },
+      {
+        date: "2025-06-01",
+        summary: "The Saputo Promise framework highlights execution priorities across environment, social, and governance pillars.",
+        url: "https://www.saputo.com/en/our-promise"
+      }
+    ]
+  },
+  "general-mills": {
+    summary:
+      "General Mills' ESG risks are centered on agricultural emissions, regenerative transition execution, and packaging circularity. The company continues to prioritize farm-level programs and public responsibility reporting to manage those exposures.",
+    stories: [
+      {
+        date: "2025-01-01",
+        summary: "General Mills' responsibility materials track commitments across climate, water, human rights, and packaging progress.",
+        url: "https://www.generalmills.com/responsibility"
+      },
+      {
+        date: "2024-12-10",
+        summary: "General Mills disclosed external recognition tied to responsible-company scoring and referenced ongoing ESG reporting commitments.",
+        url: "https://www.generalmills.com/news/press-releases/general-mills-ranked-no-2-on-newsweeks-americas-most-responsible-companies-2025-list"
+      },
+      {
+        date: "2023-10-17",
+        summary: "General Mills and Walmart announced a regenerative agriculture collaboration targeting 600,000 acres by 2030.",
+        url: "https://www.generalmills.com/news/press-releases/general-mills-and-walmart-join-forces-to-advance-regenerative-agriculture"
+      }
+    ]
+  },
+  "kellanova": {
+    summary:
+      "Kellanova's ESG focus is on resilient ingredient sourcing, farm-level climate adaptation, and responsible sourcing governance. Its latest updates emphasize regenerative agriculture programs with measurable farmer and resource outcomes.",
+    stories: [
+      {
+        date: "2025-11-24",
+        summary: "Kellanova, Walmart, and Indigo Ag launched an Arkansas rice program linking regenerative practices to water stewardship and farmer economics.",
+        url: "https://newsroom.kellanova.com/2025-11-24-Kellanova-Walmart-Indigo-Arkansas-rice-regenerative-farmer"
+      },
+      {
+        date: "2025-09-17",
+        summary: "Kellanova and ADM reported completion of a regenerative cotton program spanning 120,000 acres with emissions and soil outcomes.",
+        url: "https://www.prnewswire.com/news-releases/kellanova-and-adm-regenerative-agriculture-program-improves-soil-health-on-120-000-acres-supports-farmers-in-southeast-united-states-302558537.html"
+      },
+      {
+        date: "2025-01-01",
+        summary: "Kellanova's Better Days reporting details responsible-sourcing priorities across high-risk agricultural ingredients and supply chains.",
+        url: "https://betterdayspromise.kellanova.com/responsible-sourcing"
+      }
+    ]
+  },
+  "coca-cola": {
+    summary:
+      "Coca-Cola's ESG pressure is highest on packaging waste, water stewardship, and target credibility. Recent disclosures pair revised environmental goals with continued litigation and stakeholder scrutiny over plastics.",
+    stories: [
+      {
+        date: "2024-12-02",
+        summary: "Coca-Cola updated its environmental goals, extending time horizons and refocusing commitments across water, packaging, and emissions.",
+        url: "https://www.coca-colacompany.com/media-center/the-coca-cola-company-evolves-voluntary-environmental-goals"
+      },
+      {
+        date: "2024-10-31",
+        summary: "Los Angeles County sued Coca-Cola and PepsiCo over alleged deception tied to plastic-bottle recyclability claims.",
+        url: "https://apnews.com/article/c326225a08b2a2778afdd27d3db2d628"
+      },
+      {
+        date: "2024-01-01",
+        summary: "Coca-Cola's sustainability pages continue to emphasize water replenishment and high-risk watershed priorities.",
+        url: "https://www.coca-cola.com/cb/en/sustainability"
+      }
+    ]
+  },
+  "unilever": {
+    summary:
+      "Unilever's ESG profile includes strong climate and deforestation execution alongside scrutiny on target revisions. Current disclosures emphasize transition-plan governance and scope-3 delivery through supplier programs.",
+    stories: [
+      {
+        date: "2026-01-01",
+        summary: "Unilever's updated Climate Transition Action Plan details pathway assumptions, capex focus, and decarbonization levers for operations and value chain.",
+        url: "https://www.unilever.com/files/8b5df5f6-cb90-40fd-9691-38d06905d81d/unilever-climate-transition-action-plan-updated-2024.pdf"
+      },
+      {
+        date: "2024-04-19",
+        summary: "Unilever's revision of selected environmental and social targets drew criticism from NGOs and highlighted execution-versus-ambition tension.",
+        url: "https://www.theguardian.com/business/2024/apr/19/unilever-to-scale-back-environmental-and-social-pledges"
+      },
+      {
+        date: "2024-01-01",
+        summary: "Unilever's climate reporting tracks progress on supplier engagement, deforestation-free sourcing, and regenerative agriculture scale-up.",
+        url: "https://www.unilever.com/sustainability/climate/"
+      }
+    ]
+  },
+  "hershey": {
+    summary:
+      "Hershey remains exposed to agriculture-linked climate risk, cocoa sourcing complexity, and packaging circularity constraints. Its ESG response is centered on science-based emissions targets and responsible sourcing controls.",
+    stories: [
+      {
+        date: "2024-06-18",
+        summary: "Hershey updated and revalidated science-based emissions targets, including FLAG and non-FLAG Scope 3 pathways to 2030.",
+        url: "https://hershey.gcs-web.com/news-releases/news-release-details/hershey-updates-science-based-targets-it-advances-efforts-reduce"
+      },
+      {
+        date: "2025-01-01",
+        summary: "Hershey's environment disclosures outline progress in renewable electricity, water reduction, and operational efficiency programs.",
+        url: "https://www.thehersheycompany.com/en_us/home/sustainability/progress-on-priorities/environment.html"
+      },
+      {
+        date: "2025-01-01",
+        summary: "Hershey's responsible sourcing disclosures detail due diligence on human rights and commodity-specific risk management.",
+        url: "https://edi.hersheys.com/en_us/home/sustainability/progress-on-priorities/responsible-sourcing.html"
+      }
+    ]
+  },
+  "lindt": {
+    summary:
+      "Lindt's ESG exposure is heavily linked to cocoa supply-chain human rights, child-labor risk mitigation, and traceable sourcing performance. Recent reporting focuses on due diligence systems, remediation coverage, and sourcing metrics.",
+    stories: [
+      {
+        date: "2025-03-01",
+        summary: "Lindt published its 2024 Sustainability Report with expanded disclosures on climate, sourcing, and governance outcomes.",
+        url: "https://reports.lindt-spruengli.com/sustainability-report-2024/"
+      },
+      {
+        date: "2025-03-01",
+        summary: "Lindt's human-rights section details child-labor due diligence in cocoa origins and the use of monitoring/remediation systems.",
+        url: "https://reports.lindt-spruengli.com/sustainability-report-2024/pillars/business-ethics-and-integrity-and-human-rights/respecting-human-rights.html"
+      },
+      {
+        date: "2025-03-01",
+        summary: "Responsible sourcing disclosures show progress on priority materials, cocoa traceability coverage, and no-deforestation requirements.",
+        url: "https://reports.lindt-spruengli.com/sustainability-report-2024/pillars/improving-livelihoods/responsible-sourcing.html"
+      }
+    ]
+  },
+  "loreal": {
+    summary:
+      "L'Oreal's key ESG issues are climate and water performance, raw-material traceability, and supply-chain standards. Recent disclosures emphasize environmental leadership recognition and measurable progress in renewable energy and water reuse.",
+    stories: [
+      {
+        date: "2025-12-12",
+        summary: "L'Oreal reported a tenth consecutive CDP triple-A score, highlighting progress in climate, forests, and water-security disclosures.",
+        url: "https://www.loreal.com/en/press-release/commitments/l%E2%80%99oreal-is-awarded-an-unprecedented-10th-consecutive-aaa-rating-from-cdp/"
+      },
+      {
+        date: "2025-02-26",
+        summary: "L'Oreal announced a ninth consecutive CDP triple-A cycle with updated performance indicators on renewable energy and traceable sourcing.",
+        url: "https://www.loreal.com/en/press-release/commitments/-l-oreal-groupe-achieves-ninth-consecutive-cdp-triple-a-score/"
+      },
+      {
+        date: "2025-03-31",
+        summary: "L'Oreal's annual-report sustainability highlights summarize social, environmental, and governance performance indicators.",
+        url: "https://www.loreal-finance.com/en/annual-report-2024/social-and-environmental-highlights/"
+      }
+    ]
+  },
+  "kenvue": {
+    summary:
+      "Kenvue's ESG focus is on emissions reduction, packaging circularity, and responsible ingredient sourcing in a recently separated public-company structure. Recent disclosures emphasize measurable decarbonization progress and SBTi-aligned commitments.",
+    stories: [
+      {
+        date: "2025-06-26",
+        summary: "Kenvue released its 2024 Healthy Lives Mission report with updates on operational emissions, renewable electricity, and packaging innovation.",
+        url: "https://www.kenvue.com/kenvue-releases-second-annual-healthy-lives-mission-report"
+      },
+      {
+        date: "2024-05-02",
+        summary: "Kenvue announced SBTi validation of near-term climate targets, including Scope 1/2 cuts and supplier science-based target coverage.",
+        url: "https://www.kenvue.com/media/healthy-lives-mission-science-based-targets-validation"
+      },
+      {
+        date: "2024-01-01",
+        summary: "Kenvue's Healthy Lives Mission disclosures define commitments across climate, plastics, forest-risk inputs, and product innovation.",
+        url: "https://www.kenvue.com/kenvue-affirms-commitment-to-its-healthy-lives-mission"
+      }
+    ]
+  }
+};
+
 function buildNews(_company, primaryItems = []) {
-  return primaryItems.slice(0, 10);
+  return sortByRecency(primaryItems).slice(0, 10);
 }
 
 function sup(cfg) {
@@ -1585,6 +1914,51 @@ function buildExternalOpportunities(external) {
   ];
 }
 
+function buildExternalEsgStories(supplier, external) {
+  const profile = ESG_LIBRARY[supplier.id];
+  if (profile && profile.stories && profile.stories.length) return sortByRecency(profile.stories).slice(0, 5);
+  if (external.esg && external.esg.length) return sortByRecency(external.esg).slice(0, 5);
+
+  const esgFromNews = sortByRecency(external.news || [])
+    .filter((item) => {
+      const text = `${item.title || ""} ${item.summary || ""}`.toLowerCase();
+      return ESG_KEYWORDS.some((keyword) => text.includes(keyword));
+    })
+    .slice(0, 5)
+    .map((item) => ({ title: item.title, summary: item.summary || item.title, date: item.date, url: item.url }));
+
+  if (esgFromNews.length) return esgFromNews;
+
+  const latestSource = (external.sources || [])[0];
+  if (!latestSource) return [];
+
+  return [
+    {
+      title: "No ESG-specific story available in the current tracked feed.",
+      summary: `Monitor ${latestSource.label} for new disclosures and policy updates.`,
+      date: "",
+      url: latestSource.url
+    }
+  ];
+}
+
+function buildExternalEsgSummary(supplier, stories, external) {
+  const profile = ESG_LIBRARY[supplier.id];
+  if (profile && profile.summary) return profile.summary;
+  if (external.esgSummary) return external.esgSummary;
+  if (!stories.length) return `No major ESG issues are currently flagged for ${supplier.name} in the tracked sources.`;
+
+  const recentStory = stories[0];
+  const storyText = stories.map((item) => `${item.title || ""} ${item.summary || ""}`.toLowerCase()).join(" ");
+  const issueTags = [];
+  if (/(climate|carbon|emission|energy|water|waste|recycling|deforestation)/.test(storyText)) issueTags.push("environmental");
+  if (/(labor|human rights|health|safety|nutrition|workforce|community)/.test(storyText)) issueTags.push("social");
+  if (/(governance|board|compliance|regulatory|ethics|disclosure)/.test(storyText)) issueTags.push("governance");
+  const issueText = issueTags.length ? issueTags.join(", ") : "cross-functional ESG";
+
+  return `${supplier.name} is currently most exposed to ${issueText} issues based on recent disclosures and media coverage. The latest update (${recentStory.date || "recent"}) highlights ongoing mitigation and compliance actions, with details in the linked stories below.`;
+}
+
 function renderTopBrands(brands, totalSales) {
   const tbody = document.querySelector("#top-brands-table tbody");
   tbody.innerHTML = brands
@@ -1642,7 +2016,16 @@ function openProfile(id) {
   renderBullets("external-risks", buildExternalRisks(supplier.external));
   renderBullets("external-opportunities", buildExternalOpportunities(supplier.external));
 
-  document.getElementById("news-list").innerHTML = supplier.external.news
+  const esgStories = buildExternalEsgStories(supplier, supplier.external);
+  document.getElementById("esg-summary").textContent = buildExternalEsgSummary(supplier, esgStories, supplier.external);
+  document.getElementById("esg-list").innerHTML = esgStories
+    .map(
+      (item) =>
+        `<li>${item.summary || item.title} <a href="${item.url}" target="_blank" rel="noopener noreferrer">Read source</a>${item.date ? `<span class="news-date">(${item.date})</span>` : ""}</li>`
+    )
+    .join("");
+
+  document.getElementById("news-list").innerHTML = sortByRecency(supplier.external.news || [])
     .map(
       (item) =>
         `<li><a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.title}</a><span class="news-date">(${item.date})</span></li>`
