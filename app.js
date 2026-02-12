@@ -1266,6 +1266,37 @@ function assetUrl(path) {
   return `/${clean}`;
 }
 
+function logoCandidates(path) {
+  if (!path) return [];
+  if (/^https?:\/\//.test(path) || path.startsWith("data:")) return [path];
+  const clean = path.replace(/^\.?\//, "");
+  const localRepo = window.location.pathname.split("/").filter(Boolean)[0] || "";
+  const candidates = [
+    assetUrl(clean),
+    clean,
+    `./${clean}`,
+    `/${clean}`,
+    localRepo ? `/${localRepo}/${clean}` : ""
+  ].filter(Boolean);
+  return [...new Set(candidates)];
+}
+
+function setProfileLogo(supplier) {
+  const candidates = logoCandidates(supplier.logoUrl);
+  let index = 0;
+  const tryNext = () => {
+    if (index >= candidates.length) {
+      profileLogo.onerror = null;
+      profileLogo.src = logoFallbackDataUrl(supplier.name);
+      return;
+    }
+    const nextSrc = candidates[index++];
+    profileLogo.onerror = tryNext;
+    profileLogo.src = nextSrc;
+  };
+  tryNext();
+}
+
 function currency(value) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -1607,12 +1638,8 @@ function openProfile(id) {
 
   profileName.textContent = `${supplier.name} - Supplier Profile`;
   document.title = `${supplier.name} - Supplier Profile`;
-  profileLogo.src = assetUrl(supplier.logoUrl);
+  setProfileLogo(supplier);
   profileLogo.alt = `${supplier.name} logo`;
-  profileLogo.onerror = () => {
-    profileLogo.onerror = null;
-    profileLogo.src = logoFallbackDataUrl(supplier.name);
-  };
   profileLogo.style.display = "block";
 
   const internalTopMetrics = [
