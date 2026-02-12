@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Supplier Intelligence Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-orb bg-orb-a"></div>
+    <div class="bg-orb bg-orb-b"></div>
+
+    <main class="app-shell">
+      <section id="dashboard-view" class="view active">
+        <header class="hero">
+          <p class="kicker">Executive Demo Prototype</p>
+          <h1>Supplier Intelligence Dashboard</h1>
+          <p class="subtitle">
+            Snapshot view of strategic suppliers with sortable performance and cost dynamics.
+          </p>
+        </header>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Suppliers</h2>
+            <div class="dashboard-controls">
+              <p>Click a supplier to open the full profile.</p>
+              <input id="dashboard-search" class="dashboard-search" type="search" placeholder="Search suppliers..." aria-label="Search suppliers" />
+              <div class="profile-toggle" role="tablist" aria-label="Dashboard mode toggle">
+                <button id="dash-toggle-summary" class="toggle-btn active" type="button">Summary</button>
+                <button id="dash-toggle-detail" class="toggle-btn" type="button">Detail</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="dashboard-summary-view" class="table-wrap">
+            <table id="supplier-table">
+              <thead>
+                <tr>
+                  <th data-key="name">Supplier</th>
+                  <th data-key="sales">Sales $</th>
+                  <th data-key="salesYoy">Sales Change YoY %</th>
+                  <th data-key="margin">Margin $</th>
+                  <th data-key="marginYoy">Margin Change YoY %</th>
+                  <th data-key="inflight">Cost Change Proposals Inflight $</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div id="dashboard-detail-view" class="dashboard-detail-view"></div>
+        </section>
+      </section>
+
+      <section id="profile-view" class="view">
+        <div class="profile-topbar">
+          <button id="back-btn" class="ghost-btn">Back to Dashboard</button>
+          <div class="profile-company">
+            <img id="profile-logo" class="profile-logo" src="" alt="" />
+            <div id="profile-name" class="profile-name"></div>
+          </div>
+          <div class="profile-toggle" role="tablist" aria-label="Profile section toggle">
+            <button id="toggle-internal" class="toggle-btn active" data-target="internal" type="button">Internal</button>
+            <button id="toggle-external" class="toggle-btn" data-target="external" type="button">External</button>
+          </div>
+        </div>
+
+        <section class="profile-grid">
+          <article id="internal-panel" class="panel profile-panel profile-page active">
+            <div class="content-block summary-block">
+              <h3>Internal Performance Summary</h3>
+              <ul id="internal-summary" class="clean-list"></ul>
+            </div>
+
+            <div id="internal-top-metrics" class="op-metrics-grid"></div>
+
+            <div class="table-block">
+              <h3>Cost Change Proposals Inflight</h3>
+              <table id="inflight-table">
+                <thead>
+                  <tr>
+                    <th>Effective Date</th>
+                    <th>Top Impacted Category</th>
+                    <th>Sourcing Lead</th>
+                    <th>$ Proposed</th>
+                    <th>Justified $</th>
+                    <th>Proposed %</th>
+                    <th>Justified %</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+
+            <div class="table-block">
+              <h3>Cost Change History</h3>
+              <table id="history-table">
+                <thead>
+                  <tr>
+                    <th>Effective Date</th>
+                    <th>$ Proposed</th>
+                    <th>Accepted $</th>
+                    <th>Justified $</th>
+                    <th>Proposed %</th>
+                    <th>Justified %</th>
+                    <th>Accepted %</th>
+                    <th>Justified Acceptance Rate</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="content-block">
+              <h3>Negotiation Approach</h3>
+              <ul id="negotiation-approach" class="clean-list"></ul>
+            </div>
+
+            <div class="split-card">
+              <div class="profile-main profile-block">
+                <h3>Profile</h3>
+                <div id="profile-tiles" class="profile-tiles"></div>
+              </div>
+              <div class="profile-main profile-block">
+                <h4>Top 5 Brands</h4>
+                <div id="top-brands-coverage" class="top-brands-coverage"></div>
+                <div class="table-wrap compact-table-wrap">
+                  <table id="top-brands-table">
+                    <thead>
+                      <tr>
+                        <th>Brand</th>
+                        <th>% of Portfolio</th>
+                        <th>Sales $</th>
+                        <th>Sales % Change YoY</th>
+                        <th>Top SKU</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="split-card">
+              <div class="category-chart-wrap">
+                <h4>Category Breakout</h4>
+                <div class="category-chart-row">
+                  <div class="table-wrap compact-table-wrap">
+                    <table id="category-table">
+                      <thead>
+                        <tr>
+                          <th>Category</th>
+                          <th>Supplier Sales $</th>
+                          <th>% of Supplier Sales</th>
+                          <th>Category Sales $</th>
+                          <th>% of Category Sales</th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-block">
+              <h3>Commodity Exposure</h3>
+              <div class="table-wrap compact-table-wrap">
+                <table id="commodity-table">
+                  <thead>
+                    <tr>
+                      <th>Commodity</th>
+                      <th>Est. Portion of Portfolio</th>
+                      <th>YoY % Change</th>
+                      <th>QoQ % Change</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </article>
+
+          <article id="external-panel" class="panel profile-panel profile-page">
+            <div class="content-block summary-block">
+              <h3>External Performance Summary</h3>
+              <ul id="external-summary" class="clean-list"></ul>
+            </div>
+
+            <div class="op-metrics-grid" id="external-top-metrics"></div>
+
+            <div class="content-block">
+              <h3>Highlights from Recent Financial Report</h3>
+              <ul id="financial-highlights" class="clean-list"></ul>
+            </div>
+            <div class="content-block">
+              <h3>Risks</h3>
+              <ul id="external-risks" class="clean-list"></ul>
+            </div>
+            <div class="content-block">
+              <h3>Opportunities</h3>
+              <ul id="external-opportunities" class="clean-list"></ul>
+            </div>
+
+            <div class="content-block">
+              <h3>News Mentions</h3>
+              <ul id="news-list" class="clean-list news-list"></ul>
+            </div>
+
+            <div class="content-block source-block">
+              <h3>External Data Sources</h3>
+              <ul id="source-list" class="clean-list source-list"></ul>
+            </div>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
