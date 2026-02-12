@@ -6,12 +6,6 @@ function sup(cfg) {
   return cfg;
 }
 
-function inlineLogoData(text, color = "#5a3b1f", bg = "#f6efe3") {
-  const safe = String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 80" role="img" aria-label="${safe}"><rect width="240" height="80" rx="12" fill="${bg}"/><text x="120" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="${color}">${safe}</text></svg>`;
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
-}
-
 const suppliers = [
   sup({
     id: "nestle",
@@ -701,7 +695,7 @@ const suppliers = [
     name: "Coca-Cola",
     ticker: "KO",
     market: "Beverages & Snacks",
-    logoUrl: "assets/logos/coca-cola.svg",
+    logoUrl: "assets/logos/coca-cola-company.svg",
     internal: {
       sales: 876000000,
       salesYoy: 2.8,
@@ -1173,28 +1167,6 @@ const suppliers = [
     }
   })
 ];
-
-const inlineLogoTheme = {
-  "nestle": { text: "Nestle", color: "#6b4f2f", bg: "#f6efe3" },
-  "kraft-heinz": { text: "Kraft Heinz", color: "#a11d2f", bg: "#f4eee6" },
-  "pepsico": { text: "PepsiCo", color: "#1d4f91", bg: "#f5efe6" },
-  "procter-gamble": { text: "P&G", color: "#234f8a", bg: "#f6efe3" },
-  "maple-leaf": { text: "Maple Leaf", color: "#8e1f2e", bg: "#f7efe5" },
-  "saputo": { text: "Saputo", color: "#2f5a86", bg: "#f6efe4" },
-  "general-mills": { text: "General Mills", color: "#1d4f91", bg: "#f5ede2" },
-  "kellanova": { text: "Kellanova", color: "#bb1e34", bg: "#f7efe5" },
-  "coca-cola": { text: "Coca-Cola", color: "#c3182c", bg: "#f8efe5" },
-  "unilever": { text: "Unilever", color: "#15569a", bg: "#f3eee4" },
-  "hershey": { text: "Hershey", color: "#4c2f21", bg: "#f7efe4" },
-  "lindt": { text: "Lindt", color: "#8a6a2f", bg: "#f8f0e5" },
-  "loreal": { text: "L'Oreal", color: "#1f2023", bg: "#f5efe4" },
-  "kenvue": { text: "Kenvue", color: "#a23b24", bg: "#f6efe5" }
-};
-
-suppliers.forEach((supplier) => {
-  const theme = inlineLogoTheme[supplier.id] || { text: supplier.name, color: "#5a3b1f", bg: "#f6efe3" };
-  supplier.logoUrl = inlineLogoData(theme.text, theme.color, theme.bg);
-});
 
 function applyInternalSalesRange() {
   const rangeValues = [
