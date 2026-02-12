@@ -12,7 +12,7 @@ const suppliers = [
     name: "Nestle",
     ticker: "NESN.SW",
     market: "Packaged Food",
-    logoUrl: "https://logo.clearbit.com/nestle.com",
+    logoUrl: "assets/logos/nestle.svg",
     internal: {
       sales: 842000000,
       salesYoy: 4.3,
@@ -104,7 +104,7 @@ const suppliers = [
     name: "Kraft Heinz",
     ticker: "KHC",
     market: "Packaged Food",
-    logoUrl: "https://logo.clearbit.com/kraftheinzcompany.com",
+    logoUrl: "assets/logos/kraft-heinz.svg",
     internal: {
       sales: 711000000,
       salesYoy: -1.8,
@@ -192,7 +192,7 @@ const suppliers = [
     name: "PepsiCo",
     ticker: "PEP",
     market: "Beverages & Snacks",
-    logoUrl: "https://logo.clearbit.com/pepsico.com",
+    logoUrl: "assets/logos/pepsico.svg",
     internal: {
       sales: 898000000,
       salesYoy: 2.6,
@@ -280,7 +280,7 @@ const suppliers = [
     name: "Procter & Gamble",
     ticker: "PG",
     market: "Household & Personal Care",
-    logoUrl: "https://logo.clearbit.com/pg.com",
+    logoUrl: "assets/logos/procter-gamble.svg",
     internal: {
       sales: 865000000,
       salesYoy: 2.1,
@@ -360,7 +360,7 @@ const suppliers = [
     name: "Maple Leaf",
     ticker: "MFI.TO",
     market: "Dairy & Protein",
-    logoUrl: "https://logo.clearbit.com/mapleleaffoods.com",
+    logoUrl: "assets/logos/maple-leaf.svg",
     internal: {
       sales: 818000000,
       salesYoy: 1.4,
@@ -445,7 +445,7 @@ const suppliers = [
     name: "Saputo",
     ticker: "SAP.TO",
     market: "Dairy & Protein",
-    logoUrl: "https://logo.clearbit.com/saputo.com",
+    logoUrl: "assets/logos/saputo.svg",
     internal: {
       sales: 833000000,
       salesYoy: 1.9,
@@ -530,7 +530,7 @@ const suppliers = [
     name: "General Mills",
     ticker: "GIS",
     market: "Packaged Food",
-    logoUrl: "https://logo.clearbit.com/generalmills.com",
+    logoUrl: "assets/logos/general-mills.svg",
     internal: {
       sales: 823000000,
       salesYoy: 1.2,
@@ -615,7 +615,7 @@ const suppliers = [
     name: "Kellanova",
     ticker: "K",
     market: "Beverages & Snacks",
-    logoUrl: "https://logo.clearbit.com/kellanova.com",
+    logoUrl: "assets/logos/kellanova.svg",
     internal: {
       sales: 772000000,
       salesYoy: 1.6,
@@ -695,7 +695,7 @@ const suppliers = [
     name: "Coca-Cola",
     ticker: "KO",
     market: "Beverages & Snacks",
-    logoUrl: "https://logo.clearbit.com/coca-cola.com",
+    logoUrl: "assets/logos/coca-cola.svg",
     internal: {
       sales: 876000000,
       salesYoy: 2.8,
@@ -780,7 +780,7 @@ const suppliers = [
     name: "Unilever",
     ticker: "UL",
     market: "Household & Personal Care",
-    logoUrl: "https://logo.clearbit.com/unilever.com",
+    logoUrl: "assets/logos/unilever.svg",
     internal: {
       sales: 847000000,
       salesYoy: 2.0,
@@ -865,7 +865,7 @@ const suppliers = [
     name: "Hershey",
     ticker: "HSY",
     market: "Packaged Food",
-    logoUrl: "https://logo.clearbit.com/thehersheycompany.com",
+    logoUrl: "assets/logos/hershey.svg",
     internal: {
       sales: 792000000,
       salesYoy: 1.7,
@@ -942,7 +942,7 @@ const suppliers = [
     name: "Lindt",
     ticker: "LISN.SW",
     market: "Packaged Food",
-    logoUrl: "https://logo.clearbit.com/lindt.com",
+    logoUrl: "assets/logos/lindt.svg",
     internal: {
       sales: 688000000,
       salesYoy: 2.3,
@@ -1018,7 +1018,7 @@ const suppliers = [
     name: "L'Oreal",
     ticker: "OR.PA",
     market: "Household & Personal Care",
-    logoUrl: "https://logo.clearbit.com/loreal.com",
+    logoUrl: "assets/logos/loreal.svg",
     internal: {
       sales: 836000000,
       salesYoy: 2.4,
@@ -1094,7 +1094,7 @@ const suppliers = [
     name: "Kenvue",
     ticker: "KVUE",
     market: "Household & Personal Care",
-    logoUrl: "https://logo.clearbit.com/kenvue.com",
+    logoUrl: "assets/logos/kenvue.svg",
     internal: {
       sales: 764000000,
       salesYoy: 1.3,
