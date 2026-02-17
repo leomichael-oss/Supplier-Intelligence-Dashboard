@@ -1570,21 +1570,54 @@ const profileName = document.getElementById("profile-name");
 const backBtn = document.getElementById("back-btn");
 const internalPanel = document.getElementById("internal-panel");
 const externalPanel = document.getElementById("external-panel");
+const negotiationPanel = document.getElementById("negotiation-panel");
 const toggleInternalBtn = document.getElementById("toggle-internal");
 const toggleExternalBtn = document.getElementById("toggle-external");
+const toggleNegotiationBtn = document.getElementById("toggle-negotiation");
 const dashToggleSummaryBtn = document.getElementById("dash-toggle-summary");
 const dashToggleDetailBtn = document.getElementById("dash-toggle-detail");
+const dashToggleNegotiationsBtn = document.getElementById("dash-toggle-negotiations");
+const dashToggleNewsBtn = document.getElementById("dash-toggle-news");
 const dashboardSummaryView = document.getElementById("dashboard-summary-view");
 const dashboardDetailView = document.getElementById("dashboard-detail-view");
 const dashboardSearchInput = document.getElementById("dashboard-search");
+const dashboardAiForm = document.getElementById("dashboard-ai-form");
+const dashboardAiInput = document.getElementById("dashboard-ai-input");
+const dashboardAiSubmit = document.getElementById("dashboard-ai-submit");
+const dashboardAiAnswer = document.getElementById("dashboard-ai-answer");
 const themeToggleBtn = document.getElementById("theme-toggle");
+const profileQuickAiBar = document.getElementById("profile-quick-ai-bar");
+const quickAiForm = document.getElementById("quick-ai-form");
+const quickAiInput = document.getElementById("quick-ai-input");
+const quickAiSubmit = document.getElementById("quick-ai-submit");
+const quickAiAnswer = document.getElementById("quick-ai-answer");
+const supplierAiForm = document.getElementById("supplier-ai-form");
+const supplierAiInput = document.getElementById("supplier-ai-input");
+const supplierAiSubmit = document.getElementById("supplier-ai-submit");
+const supplierAiAnswer = document.getElementById("supplier-ai-answer");
+const negotiationListView = document.getElementById("negotiation-list-view");
+const negotiationWorkspaceView = document.getElementById("negotiation-workspace-view");
+const openNewNegotiationBtn = document.getElementById("open-new-negotiation-btn");
+const negotiationCreateBlock = document.getElementById("negotiation-create-block");
+const negotiationNameInput = document.getElementById("negotiation-name-input");
+const createNegotiationBtn = document.getElementById("create-negotiation-btn");
+const negotiationListEl = document.getElementById("negotiation-list");
+const backToNegotiationsBtn = document.getElementById("back-to-negotiations-btn");
+const currentNegotiationTitle = document.getElementById("current-negotiation-title");
+const commodityReviewFileInput = document.getElementById("commodity-review-file");
+const supplierCommunicationFileInput = document.getElementById("supplier-communication-file");
+const commodityReviewStatus = document.getElementById("commodity-review-status");
+const supplierCommunicationStatus = document.getElementById("supplier-communication-status");
 
 let sortState = { key: "sales", direction: "desc" };
 let dashboardMode = "summary";
 let dashboardTransitioning = false;
 let profileTabTransitioning = false;
 let searchTerm = "";
+let currentProfileSupplier = null;
+let currentNegotiation = null;
 const THEME_STORAGE_KEY = "supplier-intel-theme";
+const NEGOTIATION_STORAGE_KEY = "supplier-negotiations-v1";
 
 function applyTheme(theme) {
   const isLight = theme === "light";
@@ -1603,6 +1636,99 @@ function initThemeToggle() {
     localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
     applyTheme(nextTheme);
   });
+}
+
+function loadNegotiationStore() {
+  try {
+    const raw = localStorage.getItem(NEGOTIATION_STORAGE_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return typeof parsed === "object" && parsed ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveNegotiationStore(store) {
+  localStorage.setItem(NEGOTIATION_STORAGE_KEY, JSON.stringify(store));
+}
+
+function getSupplierNegotiations(supplierId) {
+  const store = loadNegotiationStore();
+  const list = store[supplierId];
+  return Array.isArray(list) ? list : [];
+}
+
+function setSupplierNegotiations(supplierId, list) {
+  const store = loadNegotiationStore();
+  store[supplierId] = list;
+  saveNegotiationStore(store);
+}
+
+function showNegotiationListView() {
+  currentNegotiation = null;
+  negotiationListView?.classList.add("active");
+  negotiationWorkspaceView?.classList.remove("active");
+  if (negotiationCreateBlock) negotiationCreateBlock.classList.add("hidden");
+  renderNegotiationList();
+}
+
+function showNegotiationWorkspaceView(negotiation) {
+  currentNegotiation = negotiation;
+  negotiationListView?.classList.remove("active");
+  negotiationWorkspaceView?.classList.add("active");
+  if (currentNegotiationTitle) currentNegotiationTitle.textContent = negotiation?.name || "Negotiation Workspace";
+  if (supplierAiInput) supplierAiInput.value = "";
+  if (supplierAiAnswer) {
+    const latest = negotiation?.latestAdvice;
+    supplierAiAnswer.textContent = latest || "Ask a negotiation question to generate supplier-specific strategic guidance.";
+  }
+}
+
+function renderNegotiationList() {
+  if (!negotiationListEl || !currentProfileSupplier) return;
+  const negotiations = getSupplierNegotiations(currentProfileSupplier.id);
+
+  if (!negotiations.length) {
+    negotiationListEl.innerHTML = `<p class="muted-text">No open negotiations for this supplier yet.</p>`;
+    return;
+  }
+
+  negotiationListEl.innerHTML = negotiations
+    .map(
+      (n) => `
+      <button class="negotiation-card" data-negotiation-id="${n.id}" type="button">
+        <div class="negotiation-card-name">${n.name}</div>
+        <div class="negotiation-card-meta">Opened ${new Date(n.createdAt).toLocaleDateString()} · Updated ${new Date(n.updatedAt).toLocaleDateString()}</div>
+      </button>`
+    )
+    .join("");
+
+  negotiationListEl.querySelectorAll(".negotiation-card").forEach((el) => {
+    el.addEventListener("click", () => {
+      const id = el.dataset.negotiationId;
+      const selected = negotiations.find((x) => x.id === id);
+      if (selected) showNegotiationWorkspaceView(selected);
+    });
+  });
+}
+
+function createNegotiation(name) {
+  if (!currentProfileSupplier) return null;
+  const trimmed = name.trim();
+  if (!trimmed) return null;
+
+  const negotiations = getSupplierNegotiations(currentProfileSupplier.id);
+  const now = new Date().toISOString();
+  const created = {
+    id: `neg_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    name: trimmed,
+    createdAt: now,
+    updatedAt: now,
+    latestAdvice: ""
+  };
+  setSupplierNegotiations(currentProfileSupplier.id, [created, ...negotiations]);
+  return created;
 }
 
 function currency(value) {
@@ -1657,6 +1783,41 @@ function filteredSuppliers() {
   return suppliers.filter((supplier) => supplier.name.toLowerCase().includes(term) || supplier.market.toLowerCase().includes(term));
 }
 
+function allNegotiations() {
+  const store = loadNegotiationStore();
+  const flat = [];
+  Object.entries(store).forEach(([supplierId, items]) => {
+    const supplier = suppliers.find((s) => s.id === supplierId);
+    if (!Array.isArray(items)) return;
+    items.forEach((item) => {
+      flat.push({
+        ...item,
+        supplierId,
+        supplierName: supplier?.name || supplierId
+      });
+    });
+  });
+  return flat.sort((a, b) => Date.parse(b.updatedAt || b.createdAt || 0) - Date.parse(a.updatedAt || a.createdAt || 0));
+}
+
+function allRecentNewsItems() {
+  const news = [];
+  suppliers.forEach((supplier) => {
+    itemsWithinDays(supplier.external.news || [], 183, 50).forEach((item) => {
+      news.push({
+        supplierId: supplier.id,
+        supplierName: supplier.name,
+        market: supplier.market,
+        title: item.title,
+        url: item.url,
+        date: item.date || "",
+        summary: item.summary || ""
+      });
+    });
+  });
+  return sortByRecency(news);
+}
+
 function sortSuppliers() {
   const { key, direction } = sortState;
   const mod = direction === "asc" ? 1 : -1;
@@ -1694,57 +1855,228 @@ function renderTable() {
   });
 }
 
-function renderDashboardDetail() {
-  const visibleSuppliers = filteredSuppliers();
+function renderDashboardDetail(sourceSuppliers) {
+  const visibleSuppliers = sourceSuppliers ?? filteredSuppliers();
   if (visibleSuppliers.length === 0) {
     dashboardDetailView.innerHTML = `<section class="market-group"><h3>No Results</h3><div class="detail-grid"><article class="supplier-detail-tile"><div class="supplier-detail-name">No suppliers match your search.</div></article></div></section>`;
     return;
   }
+
+  const renderTiles = (list) =>
+    [...list]
+      .sort((a, b) => b.internal.sales - a.internal.sales)
+      .map((supplier, idx) => {
+        const inflight = supplier.internal.inflightRows[0];
+        return `
+          <article class="supplier-detail-tile" data-id="${supplier.id}" style="--i:${idx}">
+            <div class="supplier-detail-head">
+              <div class="supplier-detail-name">${supplier.name}</div>
+            </div>
+            <div class="supplier-detail-metrics">
+              <div class="mini-metric"><span class="mini-metric-label">Sales</span><span class="mini-metric-value">${currency(supplier.internal.sales)}</span><span class="mini-metric-delta ${yoyClass(supplier.internal.salesYoy)}">${pct(supplier.internal.salesYoy)} YoY</span></div>
+              <div class="mini-metric"><span class="mini-metric-label">Margin</span><span class="mini-metric-value">${currency(supplier.internal.margin)}</span><span class="mini-metric-delta ${yoyClass(supplier.internal.marginYoy)}">${pct(supplier.internal.marginYoy)} YoY</span></div>
+              <div class="mini-metric"><span class="mini-metric-label">Tonnage</span><span class="mini-metric-value">${numberCompact(supplier.internal.tonnage)} t</span><span class="mini-metric-delta ${yoyClass(supplier.internal.tonnageYoy)}">${pct(supplier.internal.tonnageYoy)} YoY</span></div>
+              <div class="mini-metric"><span class="mini-metric-label">Service Level</span><span class="mini-metric-value">${supplier.internal.serviceLevel.toFixed(1)}%</span><span class="mini-metric-delta ${yoyClass(supplier.internal.serviceYoy)}">${pct(supplier.internal.serviceYoy)} YoY</span></div>
+              <div class="mini-metric"><span class="mini-metric-label">AIP</span><span class="mini-metric-value">$${supplier.internal.aip.toFixed(2)}</span><span class="mini-metric-delta ${yoyClass(supplier.internal.aipYoy)}">${pct(supplier.internal.aipYoy)} YoY</span></div>
+              <div class="mini-metric"><span class="mini-metric-label">AIC</span><span class="mini-metric-value">$${supplier.internal.aic.toFixed(2)}</span><span class="mini-metric-delta ${yoyClass(supplier.internal.aicYoy)}">${pct(supplier.internal.aicYoy)} YoY</span></div>
+              <div class="mini-metric"><span class="mini-metric-label">Proposed $</span><span class="mini-metric-value">${inflight ? moneyPlain(inflight.proposed) : "-"}</span></div>
+              <div class="mini-metric"><span class="mini-metric-label">Market Cap</span><span class="mini-metric-value">${supplier.external.marketCapLabel}</span></div>
+            </div>
+          </article>
+        `;
+      })
+      .join("");
+
   const groups = visibleSuppliers.reduce((acc, supplier) => {
     if (!acc[supplier.market]) acc[supplier.market] = [];
     acc[supplier.market].push(supplier);
     return acc;
   }, {});
-
-  const html = Object.entries(groups)
-    .map(([market, groupSuppliers]) => {
-      const sorted = [...groupSuppliers].sort((a, b) => b.internal.sales - a.internal.sales);
-      const tiles = sorted
-        .map((supplier, idx) => {
-          const inflight = supplier.internal.inflightRows[0];
-          return `
-            <article class="supplier-detail-tile" data-id="${supplier.id}" style="--i:${idx}">
-              <div class="supplier-detail-head">
-                <div class="supplier-detail-name">${supplier.name}</div>
-              </div>
-              <div class="supplier-detail-metrics">
-                <div class="mini-metric"><span class="mini-metric-label">Sales</span><span class="mini-metric-value">${currency(supplier.internal.sales)}</span><span class="mini-metric-delta ${yoyClass(supplier.internal.salesYoy)}">${pct(supplier.internal.salesYoy)} YoY</span></div>
-                <div class="mini-metric"><span class="mini-metric-label">Margin</span><span class="mini-metric-value">${currency(supplier.internal.margin)}</span><span class="mini-metric-delta ${yoyClass(supplier.internal.marginYoy)}">${pct(supplier.internal.marginYoy)} YoY</span></div>
-                <div class="mini-metric"><span class="mini-metric-label">Tonnage</span><span class="mini-metric-value">${numberCompact(supplier.internal.tonnage)} t</span><span class="mini-metric-delta ${yoyClass(supplier.internal.tonnageYoy)}">${pct(supplier.internal.tonnageYoy)} YoY</span></div>
-                <div class="mini-metric"><span class="mini-metric-label">Service Level</span><span class="mini-metric-value">${supplier.internal.serviceLevel.toFixed(1)}%</span><span class="mini-metric-delta ${yoyClass(supplier.internal.serviceYoy)}">${pct(supplier.internal.serviceYoy)} YoY</span></div>
-                <div class="mini-metric"><span class="mini-metric-label">AIP</span><span class="mini-metric-value">$${supplier.internal.aip.toFixed(2)}</span><span class="mini-metric-delta ${yoyClass(supplier.internal.aipYoy)}">${pct(supplier.internal.aipYoy)} YoY</span></div>
-                <div class="mini-metric"><span class="mini-metric-label">AIC</span><span class="mini-metric-value">$${supplier.internal.aic.toFixed(2)}</span><span class="mini-metric-delta ${yoyClass(supplier.internal.aicYoy)}">${pct(supplier.internal.aicYoy)} YoY</span></div>
-                <div class="mini-metric"><span class="mini-metric-label">Proposed $</span><span class="mini-metric-value">${inflight ? moneyPlain(inflight.proposed) : "-"}</span></div>
-                <div class="mini-metric"><span class="mini-metric-label">Market Cap</span><span class="mini-metric-value">${supplier.external.marketCapLabel}</span></div>
-              </div>
-            </article>
-          `;
-        })
-        .join("");
-
-      return `
-        <section class="market-group">
-          <h3>${market}</h3>
-          <div class="detail-grid">${tiles}</div>
-        </section>
-      `;
-    })
+  dashboardDetailView.innerHTML = Object.entries(groups)
+    .map(
+      ([market, groupSuppliers]) => `
+      <section class="market-group">
+        <h3>${market}</h3>
+        <div class="detail-grid">${renderTiles(groupSuppliers)}</div>
+      </section>
+    `
+    )
     .join("");
 
-  dashboardDetailView.innerHTML = html;
   dashboardDetailView.querySelectorAll(".supplier-detail-tile").forEach((tile) => {
     tile.addEventListener("click", () => openProfile(tile.dataset.id));
   });
+}
+
+function renderNegotiationsDashboard() {
+  const negotiations = allNegotiations();
+  if (negotiations.length === 0) {
+    dashboardDetailView.innerHTML = `<section class="market-group"><h3>Negotiations</h3><div class="detail-grid"><article class="supplier-detail-tile"><div class="supplier-detail-name">No negotiations created yet.</div></article></div></section>`;
+    return;
+  }
+
+  dashboardDetailView.innerHTML = `
+    <section class="market-group">
+      <h3>All Negotiations</h3>
+      <div class="detail-grid">
+        ${negotiations
+          .map(
+            (n) => `
+          <article class="supplier-detail-tile negotiation-summary-card" data-supplier-id="${n.supplierId}" data-negotiation-id="${n.id}">
+            <div class="supplier-detail-name">${n.name}</div>
+            <div class="supplier-detail-sub">${n.supplierName}</div>
+            <div class="supplier-detail-tags"><span class="chip">Updated: ${new Date(n.updatedAt || n.createdAt).toLocaleDateString()}</span></div>
+            <p class="section-intro">${(n.latestAdvice || "No advice generated yet.").slice(0, 220)}${(n.latestAdvice || "").length > 220 ? "..." : ""}</p>
+            <button class="ghost-btn open-negotiation-btn" type="button">Open</button>
+          </article>
+        `
+          )
+          .join("")}
+      </div>
+    </section>
+  `;
+
+  dashboardDetailView.querySelectorAll(".open-negotiation-btn").forEach((btn) => {
+    btn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const card = btn.closest(".negotiation-summary-card");
+      if (!card) return;
+      const supplierId = card.dataset.supplierId;
+      const negotiationId = card.dataset.negotiationId;
+      if (!supplierId || !negotiationId) return;
+      openProfile(supplierId);
+      setProfileTab("negotiation", { instant: true });
+      const target = getSupplierNegotiations(supplierId).find((x) => x.id === negotiationId);
+      if (target) showNegotiationWorkspaceView(target);
+    });
+  });
+}
+
+function renderNewsDashboard() {
+  const newsItems = allRecentNewsItems().filter((item) => {
+    if (!searchTerm.trim()) return true;
+    const term = searchTerm.toLowerCase();
+    return `${item.title || ""} ${item.supplierName || ""} ${item.market || ""} ${item.summary || ""}`.toLowerCase().includes(term);
+  });
+
+  if (newsItems.length === 0) {
+    dashboardDetailView.innerHTML = `<section class="market-group"><h3>News</h3><div class="detail-grid"><article class="supplier-detail-tile"><div class="supplier-detail-name">No recent news in the last 6 months.</div></article></div></section>`;
+    return;
+  }
+
+  dashboardDetailView.innerHTML = `
+    <section class="market-group">
+      <h3>Consolidated Supplier News (Last 6 Months)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Supplier</th>
+              <th>Market</th>
+              <th>Story</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${newsItems
+              .map(
+                (item) => `
+              <tr>
+                <td>${item.date || "-"}</td>
+                <td>${item.supplierName}</td>
+                <td>${item.market}</td>
+                <td><a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.title}</a></td>
+              </tr>
+            `
+              )
+              .join("")}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  `;
+}
+
+function buildDashboardAiContext() {
+  const sortedByInflight = [...suppliers].sort((a, b) => b.internal.inflight - a.internal.inflight).slice(0, 5);
+  const sortedByMarginPressure = [...suppliers].sort((a, b) => a.internal.marginYoy - b.internal.marginYoy).slice(0, 5);
+  return {
+    supplierCount: suppliers.length,
+    highestInflight: sortedByInflight.map((s) => ({
+      name: s.name,
+      inflight: s.internal.inflight,
+      marginYoy: s.internal.marginYoy,
+      serviceLevel: s.internal.serviceLevel
+    })),
+    marginPressure: sortedByMarginPressure.map((s) => ({
+      name: s.name,
+      marginYoy: s.internal.marginYoy,
+      salesYoy: s.internal.salesYoy,
+      inflight: s.internal.inflight
+    }))
+  };
+}
+
+function fallbackDashboardAiAnswer(question) {
+  const q = question.toLowerCase();
+  const topInflight = [...suppliers].sort((a, b) => b.internal.inflight - a.internal.inflight).slice(0, 3);
+  if (/risk|margin|pressure|inflation|cost/.test(q)) {
+    return `Top near-term risk concentration is in ${topInflight.map((s) => s.name).join(", ")} based on inflight proposals. Start with evidence-based cost bridge requests, sequence talks by exposure, and trade any price movement for service and phased timing protections.`;
+  }
+  if (/priorit|first|sequence|where/.test(q)) {
+    return `Prioritize negotiations by inflight dollar exposure and deteriorating margin/service trends. Recommended first pass: ${topInflight
+      .map((s) => `${s.name} (${moneyPlain(s.internal.inflight)})`)
+      .join(", ")}.`;
+  }
+  return `Use a portfolio lens: segment suppliers by inflight exposure, margin trend, and service trend; apply tougher counter-positioning to highest-risk suppliers and reserve concessions for suppliers providing measurable continuity value.`;
+}
+
+async function askDashboardAI(question) {
+  const context = buildDashboardAiContext();
+  const endpoint = window.DASHBOARD_AI_ENDPOINT || "/api/dashboard-ai";
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question, context })
+    });
+    if (!response.ok) throw new Error(`Dashboard AI endpoint failed (${response.status})`);
+    const data = await response.json();
+    if (!data?.answer || typeof data.answer !== "string") throw new Error("Dashboard AI response missing `answer`.");
+    return data.answer.trim();
+  } catch {
+    try {
+      const apiKey = window.OPENAI_API_KEY;
+      if (!apiKey) throw new Error("No OPENAI_API_KEY configured.");
+      const response = await fetch("https://api.openai.com/v1/responses", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4.1-mini",
+          input: [
+            {
+              role: "system",
+              content:
+                "You are a senior grocery sourcing strategist. Provide concise portfolio-level negotiation guidance in 4-6 sentences."
+            },
+            {
+              role: "user",
+              content: `Dashboard context:\\n${JSON.stringify(context, null, 2)}\\n\\nQuestion:\\n${question}`
+            }
+          ]
+        })
+      });
+      if (!response.ok) throw new Error("Direct OpenAI dashboard request failed.");
+      const data = await response.json();
+      if (data.output_text?.trim()) return data.output_text.trim();
+    } catch {
+      // fall through to deterministic fallback
+    }
+    return `${fallbackDashboardAiAnswer(question)}\n\nNote: Live AI endpoint unavailable, showing local strategic fallback.`;
+  }
 }
 
 function wait(ms) {
@@ -1758,19 +2090,29 @@ async function setDashboardMode(mode, opts = {}) {
 
   dashboardMode = mode;
   const showSummary = mode === "summary";
-  dashToggleSummaryBtn.classList.toggle("active", showSummary);
-  dashToggleDetailBtn.classList.toggle("active", !showSummary);
+  const showNegotiations = mode === "negotiations";
+  const showNews = mode === "news";
+  dashToggleSummaryBtn.classList.toggle("active", mode === "summary");
+  dashToggleDetailBtn.classList.toggle("active", mode === "detail");
+  if (dashToggleNegotiationsBtn) dashToggleNegotiationsBtn.classList.toggle("active", showNegotiations);
+  if (dashToggleNewsBtn) dashToggleNewsBtn.classList.toggle("active", showNews);
 
   if (opts.instant) {
     dashboardSummaryView.style.display = showSummary ? "block" : "none";
     dashboardDetailView.classList.toggle("active", !showSummary);
-    if (!showSummary) renderDashboardDetail();
+    if (!showSummary) {
+      if (showNegotiations) renderNegotiationsDashboard();
+      else if (showNews) renderNewsDashboard();
+      else renderDashboardDetail();
+    }
     dashboardTransitioning = false;
     return;
   }
 
   if (!showSummary) {
-    renderDashboardDetail();
+    if (showNegotiations) renderNegotiationsDashboard();
+    else if (showNews) renderNewsDashboard();
+    else renderDashboardDetail();
     dashboardSummaryView.classList.remove("mode-enter");
     dashboardSummaryView.classList.add("mode-exit");
     await wait(190);
@@ -1827,34 +2169,44 @@ function renderBullets(elementId, items) {
 async function setProfileTab(tabName, opts = {}) {
   if (profileTabTransitioning) return;
   profileTabTransitioning = true;
-  const showInternal = tabName === "internal";
-  const showPanel = showInternal ? internalPanel : externalPanel;
-  const hidePanel = showInternal ? externalPanel : internalPanel;
+  const panelsByTab = {
+    internal: internalPanel,
+    external: externalPanel,
+    negotiation: negotiationPanel
+  };
+  const showPanel = panelsByTab[tabName] || internalPanel;
+  const hidePanels = Object.values(panelsByTab).filter((panel) => panel && panel !== showPanel);
 
-  toggleInternalBtn.classList.toggle("active", showInternal);
-  toggleExternalBtn.classList.toggle("active", !showInternal);
+  toggleInternalBtn.classList.toggle("active", tabName === "internal");
+  toggleExternalBtn.classList.toggle("active", tabName === "external");
+  toggleNegotiationBtn.classList.toggle("active", tabName === "negotiation");
+  if (profileQuickAiBar) {
+    profileQuickAiBar.classList.toggle("hidden", tabName === "negotiation");
+  }
+  if (tabName === "negotiation" && negotiationListView?.classList.contains("active")) {
+    renderNegotiationList();
+  }
 
   if (opts.instant) {
-    hidePanel.classList.remove("active", "mode-enter", "mode-exit");
+    hidePanels.forEach((panel) => panel.classList.remove("active", "mode-enter", "mode-exit"));
     showPanel.classList.remove("mode-enter", "mode-exit");
     showPanel.classList.add("active");
     profileTabTransitioning = false;
     return;
   }
 
-  hidePanel.classList.remove("mode-enter");
-  hidePanel.classList.add("mode-exit");
+  hidePanels.forEach((panel) => {
+    panel.classList.remove("mode-enter");
+    panel.classList.add("mode-exit");
+  });
   await wait(130);
-  hidePanel.classList.remove("active", "mode-exit");
+  hidePanels.forEach((panel) => panel.classList.remove("active", "mode-exit"));
 
   showPanel.classList.add("active");
   showPanel.classList.remove("mode-exit");
   showPanel.classList.add("mode-enter");
   await wait(170);
   showPanel.classList.remove("mode-enter");
-
-  internalPanel.classList.toggle("active", showInternal);
-  externalPanel.classList.toggle("active", !showInternal);
   profileTabTransitioning = false;
 }
 
@@ -1914,12 +2266,29 @@ function buildExternalOpportunities(external) {
   ];
 }
 
+function itemsWithinDays(items = [], days = 183, maxItems = 10) {
+  const now = Date.now();
+  return sortByRecency(items)
+    .filter((item) => {
+      const ts = toTimestamp(item.date);
+      if (!ts) return false;
+      return now - ts <= days * 24 * 60 * 60 * 1000;
+    })
+    .slice(0, maxItems);
+}
+
 function buildExternalEsgStories(supplier, external) {
   const profile = ESG_LIBRARY[supplier.id];
-  if (profile && profile.stories && profile.stories.length) return sortByRecency(profile.stories).slice(0, 5);
-  if (external.esg && external.esg.length) return sortByRecency(external.esg).slice(0, 5);
+  if (profile && profile.stories && profile.stories.length) {
+    const recentProfileStories = itemsWithinDays(profile.stories, 183, 5);
+    if (recentProfileStories.length) return recentProfileStories;
+  }
+  if (external.esg && external.esg.length) {
+    const recentExternalEsg = itemsWithinDays(external.esg, 183, 5);
+    if (recentExternalEsg.length) return recentExternalEsg;
+  }
 
-  const esgFromNews = sortByRecency(external.news || [])
+  const esgFromNews = itemsWithinDays(external.news || [], 183, 20)
     .filter((item) => {
       const text = `${item.title || ""} ${item.summary || ""}`.toLowerCase();
       return ESG_KEYWORDS.some((keyword) => text.includes(keyword));
@@ -1934,7 +2303,7 @@ function buildExternalEsgStories(supplier, external) {
 
   return [
     {
-      title: "No ESG-specific story available in the current tracked feed.",
+      title: "No ESG story in the last 6 months.",
       summary: `Monitor ${latestSource.label} for new disclosures and policy updates.`,
       date: "",
       url: latestSource.url
@@ -1978,12 +2347,236 @@ function renderTopBrands(brands, totalSales) {
   document.getElementById("top-brands-coverage").textContent = `Top 5 brands encompass ${totalCoverage.toFixed(1)}% of portfolio`;
 }
 
+function buildSupplierContext(supplier) {
+  const internal = supplier.internal;
+  const external = supplier.external;
+  const latestInflight = internal.inflightRows?.[0];
+  const topCategory = [...internal.categories].sort((a, b) => b.categoryPct - a.categoryPct)[0];
+  const topCommodity = [...internal.commodities].sort((a, b) => Math.abs(b.yoy) - Math.abs(a.yoy))[0];
+
+  return {
+    supplier: supplier.name,
+    market: supplier.market,
+    sales: internal.sales,
+    salesYoy: internal.salesYoy,
+    margin: internal.margin,
+    marginYoy: internal.marginYoy,
+    serviceLevel: internal.serviceLevel,
+    serviceYoy: internal.serviceYoy,
+    inflightProposal: latestInflight
+      ? {
+          date: latestInflight.date,
+          category: latestInflight.topImpactedCategory,
+          proposed: latestInflight.proposed,
+          justified: latestInflight.justified,
+          proposedPct: latestInflight.proposedPct,
+          justifiedPct: latestInflight.justifiedPct
+        }
+      : null,
+    topCategory: topCategory
+      ? {
+          category: topCategory.category,
+          supplierPct: topCategory.supplierPct,
+          categoryPct: topCategory.categoryPct
+        }
+      : null,
+    topCommodity: topCommodity
+      ? {
+          commodity: topCommodity.commodity,
+          portion: topCommodity.portion,
+          yoy: topCommodity.yoy,
+          qoq: topCommodity.qoq
+        }
+      : null,
+    externalSalesLabel: external.reportSalesLabel,
+    externalSalesYoyLabel: external.reportSalesYoyLabel,
+    grossMarginLabel: external.grossMarginLabel,
+    grossMarginYoyLabel: external.grossMarginYoyLabel,
+    risks: buildExternalRisks(external).slice(0, 3),
+    opportunities: buildExternalOpportunities(external).slice(0, 3)
+  };
+}
+
+function buildDashboardContextForSupplier(supplier) {
+  const peers = suppliers
+    .filter((x) => x.id !== supplier.id && x.market === supplier.market)
+    .sort((a, b) => b.internal.sales - a.internal.sales)
+    .slice(0, 4)
+    .map((x) => ({
+      name: x.name,
+      sales: x.internal.sales,
+      salesYoy: x.internal.salesYoy,
+      marginYoy: x.internal.marginYoy,
+      inflight: x.internal.inflight
+    }));
+
+  const supplierMedianService =
+    [...suppliers]
+      .map((x) => x.internal.serviceLevel)
+      .sort((a, b) => a - b)
+      .at(Math.floor(suppliers.length / 2)) || 0;
+
+  return {
+    peerSet: peers,
+    supplierCount: suppliers.length,
+    medianServiceLevel: supplierMedianService
+  };
+}
+
+async function readUploadedFile(file) {
+  if (!file) return { name: null, text: "", note: "No file provided." };
+  const lower = file.name.toLowerCase();
+  const isTextLike = /\.(txt|md|csv|json)$/i.test(lower) || file.type.startsWith("text/");
+
+  if (!isTextLike) {
+    return {
+      name: file.name,
+      text: "",
+      note: "File attached but not text-readable in browser. Provide key excerpts in text for best results."
+    };
+  }
+
+  const text = await file.text();
+  return {
+    name: file.name,
+    text: text.slice(0, 18000),
+    note: text.length > 18000 ? "File truncated to first 18k characters." : ""
+  };
+}
+
+function fallbackSupplierAiAnswer(supplier, question) {
+  const q = question.toLowerCase();
+  const internal = supplier.internal;
+  const topCategory = [...internal.categories].sort((a, b) => b.categoryPct - a.categoryPct)[0];
+  const latestInflight = internal.inflightRows?.[0];
+
+  if (/leverage|negotiat|counter|ask/.test(q)) {
+    return `Near-term leverage is strongest where performance is mixed and asks are concentrated. For ${supplier.name}, service is ${internal.serviceLevel.toFixed(
+      1
+    )}% (${pct(internal.serviceYoy)} YoY), while current inflight proposal is ${latestInflight ? moneyPlain(latestInflight.proposed) : "n/a"}. Anchor to cost evidence and tie concessions to service recovery and phased timing.`;
+  }
+
+  if (/risk|margin|inflation|cost/.test(q)) {
+    return `Primary margin risk is concentration in ${topCategory?.category || "core categories"} plus commodity volatility. Current profile: sales ${currency(
+      internal.sales
+    )} (${pct(internal.salesYoy)} YoY), margin ${currency(internal.margin)} (${pct(internal.marginYoy)} YoY). Focus on validating proposed cost drivers before accepting pass-through.`;
+  }
+
+  return `${supplier.name} profile indicates ${currency(internal.sales)} sales and ${currency(internal.margin)} margin with service at ${internal.serviceLevel.toFixed(
+    1
+  )}%. For this question, use the negotiation approach section plus inflight and history tables to set evidence-based counters and timing conditions.`;
+}
+
+async function askSupplierAI(question, commodityReviewFile, supplierCommunicationFile) {
+  if (!currentProfileSupplier) throw new Error("No supplier selected.");
+  const supplier = currentProfileSupplier;
+  const commodityReview = await readUploadedFile(commodityReviewFile);
+  const supplierCommunication = await readUploadedFile(supplierCommunicationFile);
+  const payload = {
+    question,
+    supplierId: supplier.id,
+    supplierName: supplier.name,
+    context: buildSupplierContext(supplier),
+    dashboardContext: buildDashboardContextForSupplier(supplier),
+    uploadedDocuments: {
+      commodityReview,
+      supplierCommunication
+    }
+  };
+
+  const endpoint = window.SUPPLIER_AI_ENDPOINT || "/api/negotiation-assistant";
+
+  async function callOpenAIDirectly() {
+    const apiKey = window.OPENAI_API_KEY;
+    if (!apiKey) throw new Error("No OPENAI_API_KEY configured in browser.");
+    const response = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: "gpt-4.1-mini",
+        input: [
+          {
+            role: "system",
+            content:
+              "You are a senior grocery sourcing strategist. Provide negotiation advice that is specific, data-backed, and practical. Include: 1) recommended stance, 2) counter-arguments, 3) concessions to trade, 4) red lines, 5) next-step script."
+          },
+          {
+            role: "user",
+            content: `Supplier context:\\n${JSON.stringify(payload.context, null, 2)}\\n\\nDashboard context:\\n${JSON.stringify(
+              payload.dashboardContext,
+              null,
+              2
+            )}\\n\\nCommodity review (${commodityReview.name || "none"}):\\n${commodityReview.text || commodityReview.note}\\n\\nSupplier communication (${
+              supplierCommunication.name || "none"
+            }):\\n${supplierCommunication.text || supplierCommunication.note}\\n\\nQuestion:\\n${question}`
+          }
+        ]
+      })
+    });
+    if (!response.ok) throw new Error(`OpenAI request failed (${response.status}).`);
+    const data = await response.json();
+    return data.output_text?.trim();
+  }
+
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    if (!response.ok) {
+      throw new Error(`AI endpoint failed (${response.status})`);
+    }
+    const data = await response.json();
+    if (!data?.answer || typeof data.answer !== "string") {
+      throw new Error("AI endpoint response missing `answer`.");
+    }
+    return data.answer.trim();
+  } catch (error) {
+    try {
+      const directAnswer = await callOpenAIDirectly();
+      if (directAnswer) return directAnswer;
+    } catch (openAiError) {
+      // fall through to deterministic fallback
+    }
+    return `${fallbackSupplierAiAnswer(
+      supplier,
+      question
+    )}\n\nUse uploaded docs to validate: challenge unsupported cost claims, request line-item evidence, and tie concessions to service + timing commitments.\n\nNote: Live AI endpoint unavailable, showing local strategic fallback.`;
+  }
+}
+
 function openProfile(id) {
   const supplier = suppliers.find((x) => x.id === id);
   if (!supplier) return;
+  currentProfileSupplier = supplier;
 
   profileName.textContent = `${supplier.name} - Supplier Profile`;
   document.title = `${supplier.name} - Supplier Profile`;
+  if (supplierAiInput) {
+    supplierAiInput.value = "";
+    supplierAiInput.placeholder = `Ask AI negotiation strategy for ${supplier.name}...`;
+  }
+  if (supplierAiAnswer) {
+    supplierAiAnswer.textContent = `Ask a negotiation question about ${supplier.name}. Upload commodity review and supplier communication files for stronger advice.`;
+  }
+  if (commodityReviewStatus) {
+    commodityReviewStatus.textContent = "No file uploaded.";
+  }
+  if (supplierCommunicationStatus) {
+    supplierCommunicationStatus.textContent = "No file uploaded.";
+  }
+  if (quickAiInput) {
+    quickAiInput.value = "";
+    quickAiInput.placeholder = `Ask a quick question about ${supplier.name}...`;
+  }
+  if (quickAiAnswer) {
+    quickAiAnswer.textContent = `Ask a quick question about ${supplier.name}, or use Negotiation Assistant for document-aware strategy.`;
+  }
+  showNegotiationListView();
 
   const internalTopMetrics = [
     { label: "Sales", value: currency(supplier.internal.sales), delta: supplier.internal.salesYoy, deltaLabel: "YoY" },
@@ -2025,12 +2618,17 @@ function openProfile(id) {
     )
     .join("");
 
-  document.getElementById("news-list").innerHTML = sortByRecency(supplier.external.news || [])
+  const recentNews = itemsWithinDays(supplier.external.news || [], 183, 10);
+  if (recentNews.length === 0) {
+    document.getElementById("news-list").innerHTML = `<li>No news mentions in the last 6 months for this supplier.</li>`;
+  } else {
+  document.getElementById("news-list").innerHTML = recentNews
     .map(
       (item) =>
         `<li><a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.title}</a><span class="news-date">(${item.date})</span></li>`
     )
     .join("");
+  }
 
   document.getElementById("source-list").innerHTML = supplier.external.sources
     .map((src) => `<li><a href="${src.url}" target="_blank" rel="noopener noreferrer">${src.label}</a></li>`)
@@ -2144,20 +2742,156 @@ document.querySelectorAll("#supplier-table th").forEach((th) => {
 });
 
 backBtn.addEventListener("click", () => {
+  currentProfileSupplier = null;
   profileView.classList.remove("active");
   dashboardView.classList.add("active");
   document.title = "Supplier Intelligence Dashboard";
 });
 
+if (supplierAiForm && supplierAiInput && supplierAiAnswer) {
+  supplierAiForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const question = supplierAiInput.value.trim();
+    if (!question || !currentProfileSupplier) return;
+    if (!currentNegotiation) {
+      supplierAiAnswer.textContent = "Open or create a negotiation first.";
+      return;
+    }
+    const commodityReviewFile = commodityReviewFileInput?.files?.[0] || null;
+    const supplierCommunicationFile = supplierCommunicationFileInput?.files?.[0] || null;
+
+    supplierAiAnswer.textContent = "Analyzing supplier context, dashboard signals, and uploaded documents...";
+    if (supplierAiSubmit) {
+      supplierAiSubmit.disabled = true;
+      supplierAiSubmit.textContent = "Thinking...";
+    }
+
+    try {
+      const answer = await askSupplierAI(question, commodityReviewFile, supplierCommunicationFile);
+      supplierAiAnswer.textContent = answer;
+      const negotiations = getSupplierNegotiations(currentProfileSupplier.id);
+      const updated = negotiations.map((n) =>
+        n.id === currentNegotiation.id ? { ...n, updatedAt: new Date().toISOString(), latestAdvice: answer } : n
+      );
+      setSupplierNegotiations(currentProfileSupplier.id, updated);
+      currentNegotiation = updated.find((n) => n.id === currentNegotiation.id) || currentNegotiation;
+    } catch (error) {
+      supplierAiAnswer.textContent = "Unable to generate AI response right now. Please try again.";
+    } finally {
+      if (supplierAiSubmit) {
+        supplierAiSubmit.disabled = false;
+        supplierAiSubmit.textContent = "Ask AI";
+      }
+    }
+  });
+}
+
+if (openNewNegotiationBtn && negotiationCreateBlock) {
+  openNewNegotiationBtn.addEventListener("click", () => {
+    negotiationCreateBlock.classList.remove("hidden");
+    negotiationNameInput?.focus();
+  });
+}
+
+if (createNegotiationBtn && negotiationNameInput) {
+  createNegotiationBtn.addEventListener("click", () => {
+    const created = createNegotiation(negotiationNameInput.value);
+    if (!created) return;
+    negotiationNameInput.value = "";
+    negotiationCreateBlock?.classList.add("hidden");
+    renderNegotiationList();
+    showNegotiationWorkspaceView(created);
+  });
+}
+
+if (backToNegotiationsBtn) {
+  backToNegotiationsBtn.addEventListener("click", () => {
+    showNegotiationListView();
+  });
+}
+
+if (commodityReviewFileInput && commodityReviewStatus) {
+  commodityReviewFileInput.addEventListener("change", () => {
+    const file = commodityReviewFileInput.files?.[0];
+    commodityReviewStatus.textContent = file ? `${file.name} (${Math.round(file.size / 1024)} KB)` : "No file uploaded.";
+  });
+}
+
+if (supplierCommunicationFileInput && supplierCommunicationStatus) {
+  supplierCommunicationFileInput.addEventListener("change", () => {
+    const file = supplierCommunicationFileInput.files?.[0];
+    supplierCommunicationStatus.textContent = file ? `${file.name} (${Math.round(file.size / 1024)} KB)` : "No file uploaded.";
+  });
+}
+
+if (quickAiForm && quickAiInput && quickAiAnswer) {
+  quickAiForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const question = quickAiInput.value.trim();
+    if (!question || !currentProfileSupplier) return;
+
+    quickAiAnswer.textContent = "Analyzing supplier context...";
+    if (quickAiSubmit) {
+      quickAiSubmit.disabled = true;
+      quickAiSubmit.textContent = "Thinking...";
+    }
+
+    try {
+      const answer = await askSupplierAI(question, null, null);
+      quickAiAnswer.textContent = answer;
+    } catch {
+      quickAiAnswer.textContent = "Unable to generate AI response right now. Please try again.";
+    } finally {
+      if (quickAiSubmit) {
+        quickAiSubmit.disabled = false;
+        quickAiSubmit.textContent = "Ask AI";
+      }
+    }
+  });
+}
+
 toggleInternalBtn.addEventListener("click", () => setProfileTab("internal"));
 toggleExternalBtn.addEventListener("click", () => setProfileTab("external"));
+toggleNegotiationBtn.addEventListener("click", () => setProfileTab("negotiation"));
 dashToggleSummaryBtn.addEventListener("click", () => setDashboardMode("summary"));
 dashToggleDetailBtn.addEventListener("click", () => setDashboardMode("detail"));
+if (dashToggleNegotiationsBtn) {
+  dashToggleNegotiationsBtn.addEventListener("click", () => setDashboardMode("negotiations"));
+}
+if (dashToggleNewsBtn) {
+  dashToggleNewsBtn.addEventListener("click", () => setDashboardMode("news"));
+}
 dashboardSearchInput.addEventListener("input", () => {
   searchTerm = dashboardSearchInput.value.trim();
   renderTable();
   if (dashboardMode === "detail") renderDashboardDetail();
+  if (dashboardMode === "negotiations") renderNegotiationsDashboard();
+  if (dashboardMode === "news") renderNewsDashboard();
 });
+
+if (dashboardAiForm && dashboardAiInput && dashboardAiAnswer) {
+  dashboardAiForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const question = dashboardAiInput.value.trim();
+    if (!question) return;
+    dashboardAiAnswer.textContent = "Analyzing dashboard context...";
+    if (dashboardAiSubmit) {
+      dashboardAiSubmit.disabled = true;
+      dashboardAiSubmit.textContent = "Thinking...";
+    }
+    try {
+      const answer = await askDashboardAI(question);
+      dashboardAiAnswer.textContent = answer;
+    } catch {
+      dashboardAiAnswer.textContent = "Unable to generate AI response right now. Please try again.";
+    } finally {
+      if (dashboardAiSubmit) {
+        dashboardAiSubmit.disabled = false;
+        dashboardAiSubmit.textContent = "Ask AI";
+      }
+    }
+  });
+}
 
 initThemeToggle();
 renderTable();

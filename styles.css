@@ -314,6 +314,216 @@ tbody tr:hover {
   grid-template-columns: 1fr;
   gap: 1.1rem;
   margin-top: 0.2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.profile-panel,
+.content-block,
+.table-block,
+.split-card {
+  position: relative;
+  z-index: 1;
+}
+
+.profile-ai-bar {
+  margin: 0.3rem 0 1rem;
+  padding: 1rem 1.1rem;
+}
+
+#profile-quick-ai-bar,
+#dashboard-ai-bar {
+  position: sticky;
+  top: 5.9rem;
+  z-index: 79;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(145deg, rgba(12, 33, 56, 0.98), rgba(10, 28, 48, 0.98)) padding-box,
+    linear-gradient(120deg, rgba(83, 224, 255, 0.9), rgba(124, 133, 255, 0.88), rgba(112, 248, 202, 0.88), rgba(255, 165, 122, 0.88)) border-box;
+  box-shadow:
+    0 10px 24px rgba(7, 19, 34, 0.42),
+    0 0 0 1px rgba(114, 208, 255, 0.24),
+    0 0 24px rgba(79, 181, 255, 0.3),
+    0 0 36px rgba(125, 139, 255, 0.2),
+    0 0 30px rgba(106, 239, 202, 0.18);
+  backdrop-filter: blur(7px);
+}
+
+#profile-quick-ai-bar::before,
+#dashboard-ai-bar::before {
+  content: "";
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(95, 210, 255, 0), rgba(95, 210, 255, 0.9), rgba(129, 126, 255, 0.9), rgba(99, 234, 189, 0.9), rgba(255, 168, 126, 0.9), rgba(95, 210, 255, 0));
+}
+
+#profile-quick-ai-bar::after,
+#dashboard-ai-bar::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(85, 220, 255, 0.3), transparent 35%),
+    radial-gradient(circle at 80% 0%, rgba(138, 128, 255, 0.24), transparent 36%),
+    radial-gradient(circle at 50% 100%, rgba(93, 230, 189, 0.22), transparent 40%);
+  filter: blur(10px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+#dashboard-ai-bar {
+  position: relative;
+  top: auto;
+  z-index: 5;
+}
+
+.profile-ai-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.55rem 1rem;
+}
+
+.profile-ai-header h3 {
+  margin: 0;
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+}
+
+.profile-ai-header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.profile-ai-form {
+  margin-top: 0.8rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.55rem;
+}
+
+.profile-ai-form-stacked {
+  grid-template-columns: 1fr;
+  gap: 0.7rem;
+}
+
+.profile-ai-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.profile-ai-input {
+  border: 1px solid #d9cfbf;
+  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+  background: #fffdf8;
+  color: #4f4538;
+  font: inherit;
+}
+
+.profile-ai-textarea {
+  min-height: 110px;
+  resize: vertical;
+  border-radius: 12px;
+}
+
+.profile-ai-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.profile-ai-file {
+  width: 100%;
+  border: 1px dashed #bfae94;
+  border-radius: 10px;
+  padding: 0.5rem;
+  background: #fffdf8;
+  color: #4f4538;
+}
+
+.profile-ai-file-status {
+  margin: 0.35rem 0 0;
+  font-size: 0.84rem;
+}
+
+.profile-ai-answer {
+  margin-top: 0.8rem;
+  border: 1px solid #e1dacb;
+  border-radius: 12px;
+  padding: 0.8rem 0.9rem;
+  background: #fffef9;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
+.muted-text {
+  color: var(--muted);
+}
+
+.negotiation-subview {
+  display: none;
+}
+
+.negotiation-subview.active {
+  display: block;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.negotiation-create-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.negotiation-list {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.negotiation-card {
+  border: 1px solid #2d5172;
+  border-radius: 12px;
+  background: #0f263f;
+  color: var(--text);
+  text-align: left;
+  padding: 0.7rem 0.85rem;
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+
+.negotiation-card:hover {
+  background: #153250;
+}
+
+.negotiation-card-name {
+  font-weight: 700;
+}
+
+.negotiation-card-meta {
+  margin-top: 0.2rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.negotiation-workspace-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 .profile-page {
@@ -830,6 +1040,14 @@ a {
   .supplier-detail-metrics {
     grid-template-columns: repeat(2, minmax(130px, 1fr));
   }
+
+  .profile-ai-upload-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .negotiation-create-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Aurora variant overrides */
@@ -916,9 +1134,16 @@ h4,
 .op-metric,
 .metric-card,
 .mini-metric,
-.profile-tile {
+.profile-tile,
+.profile-ai-input,
+.profile-ai-file {
   background: #102741;
   color: var(--text);
+  border-color: #2d5172;
+}
+
+.profile-ai-answer {
+  background: #102741;
   border-color: #2d5172;
 }
 
@@ -1113,6 +1338,47 @@ body.light-mode .supplier-detail-tile::before {
 body.light-mode .summary-block,
 body.light-mode .source-block {
   background: #f2f8ff;
+}
+
+body.light-mode .profile-ai-input {
+  background: #ffffff;
+  color: #15314b;
+  border-color: #bfd8ec;
+}
+
+body.light-mode .profile-ai-file {
+  background: #ffffff;
+  color: #15314b;
+  border-color: #bfd8ec;
+}
+
+body.light-mode .profile-ai-answer {
+  border-color: #c8dced;
+  background: #f7fbff;
+}
+
+body.light-mode #profile-quick-ai-bar,
+body.light-mode #dashboard-ai-bar {
+  border-color: transparent;
+  background:
+    linear-gradient(145deg, rgba(245, 251, 255, 0.99), rgba(236, 246, 255, 0.99)) padding-box,
+    linear-gradient(120deg, rgba(95, 194, 245, 0.8), rgba(154, 136, 245, 0.72), rgba(112, 214, 184, 0.72), rgba(255, 176, 122, 0.75)) border-box;
+  box-shadow: 0 10px 22px rgba(58, 118, 170, 0.2), 0 0 0 1px rgba(91, 170, 224, 0.18), 0 0 24px rgba(120, 200, 255, 0.24), 0 0 24px rgba(157, 149, 247, 0.14);
+}
+
+body.light-mode #profile-quick-ai-bar::before,
+body.light-mode #dashboard-ai-bar::before {
+  background: linear-gradient(90deg, rgba(65, 162, 228, 0), rgba(65, 162, 228, 0.88), rgba(144, 128, 240, 0.78), rgba(98, 198, 165, 0.78), rgba(239, 164, 117, 0.78), rgba(65, 162, 228, 0));
+}
+
+body.light-mode .negotiation-card {
+  background: #ffffff;
+  color: #17314b;
+  border-color: #bfd8ec;
+}
+
+body.light-mode .negotiation-card:hover {
+  background: #edf6ff;
 }
 
 body.light-mode .total-row td {

@@ -26,6 +26,18 @@
           </p>
         </header>
 
+        <section id="dashboard-ai-bar" class="profile-ai-bar panel">
+          <div class="profile-ai-header">
+            <h3>Ask AI</h3>
+            <p>Ask portfolio-level sourcing and negotiation questions across all suppliers.</p>
+          </div>
+          <form id="dashboard-ai-form" class="profile-ai-form">
+            <input id="dashboard-ai-input" class="profile-ai-input" type="text" placeholder="e.g., Which suppliers show the highest near-term margin risk?" aria-label="Ask AI on dashboard" required />
+            <button id="dashboard-ai-submit" class="ghost-btn" type="submit">Ask AI</button>
+          </form>
+          <div id="dashboard-ai-answer" class="profile-ai-answer muted-text">Ask a question to get cross-supplier strategic guidance.</div>
+        </section>
+
         <section class="panel">
           <div class="panel-header">
             <h2>Suppliers</h2>
@@ -35,6 +47,8 @@
               <div class="profile-toggle" role="tablist" aria-label="Dashboard mode toggle">
                 <button id="dash-toggle-summary" class="toggle-btn active" type="button">Summary</button>
                 <button id="dash-toggle-detail" class="toggle-btn" type="button">Detail</button>
+                <button id="dash-toggle-negotiations" class="toggle-btn" type="button">Negotiations</button>
+                <button id="dash-toggle-news" class="toggle-btn" type="button">News</button>
               </div>
             </div>
           </div>
@@ -67,8 +81,30 @@
           <div class="profile-toggle" role="tablist" aria-label="Profile section toggle">
             <button id="toggle-internal" class="toggle-btn active" data-target="internal" type="button">Internal</button>
             <button id="toggle-external" class="toggle-btn" data-target="external" type="button">External</button>
+            <button id="toggle-negotiation" class="toggle-btn" data-target="negotiation" type="button">Negotiation Assistant</button>
           </div>
         </div>
+
+        <section id="profile-quick-ai-bar" class="profile-ai-bar panel">
+          <div class="profile-ai-header">
+            <h3>Ask AI</h3>
+            <p>Ask a supplier-specific question from Internal or External view.</p>
+          </div>
+          <form id="quick-ai-form" class="profile-ai-form">
+            <input
+              id="quick-ai-input"
+              class="profile-ai-input"
+              type="text"
+              placeholder="e.g., What is our strongest counter-position right now?"
+              aria-label="Quick AI ask"
+              required
+            />
+            <button id="quick-ai-submit" class="ghost-btn" type="submit">Ask AI</button>
+          </form>
+          <div id="quick-ai-answer" class="profile-ai-answer muted-text">
+            Ask a question for a fast supplier-specific answer.
+          </div>
+        </section>
 
         <section class="profile-grid">
           <article id="internal-panel" class="panel profile-panel profile-page active">
@@ -224,6 +260,81 @@
             <div class="content-block source-block">
               <h3>External Data Sources</h3>
               <ul id="source-list" class="clean-list source-list"></ul>
+            </div>
+          </article>
+
+          <article id="negotiation-panel" class="panel profile-panel profile-page">
+            <div id="negotiation-list-view" class="negotiation-subview active">
+              <div class="content-block summary-block">
+                <h3>Negotiation Assistant</h3>
+                <p class="section-intro">
+                  Open and manage supplier-specific negotiations. Enter a negotiation to run AI strategy, upload documents, and capture advisory output.
+                </p>
+                <button id="open-new-negotiation-btn" class="ghost-btn" type="button">Open New Negotiation</button>
+              </div>
+
+              <div id="negotiation-create-block" class="content-block negotiation-create-block hidden">
+                <label class="profile-ai-label" for="negotiation-name-input">Negotiation Name</label>
+                <div class="negotiation-create-row">
+                  <input
+                    id="negotiation-name-input"
+                    class="profile-ai-input"
+                    type="text"
+                    placeholder="e.g., Q2 Cost Increase – Confectionery"
+                  />
+                  <button id="create-negotiation-btn" class="ghost-btn" type="button">Create</button>
+                </div>
+              </div>
+
+              <div class="content-block">
+                <h3>Open Negotiations</h3>
+                <div id="negotiation-list" class="negotiation-list"></div>
+              </div>
+            </div>
+
+            <div id="negotiation-workspace-view" class="negotiation-subview">
+              <div class="content-block summary-block">
+                <div class="negotiation-workspace-head">
+                  <button id="back-to-negotiations-btn" class="ghost-btn" type="button">Back to Open Negotiations</button>
+                  <h3 id="current-negotiation-title">Negotiation Workspace</h3>
+                </div>
+                <p class="section-intro">Use this workspace to prepare strategy and response positions for this negotiation.</p>
+              </div>
+
+              <div class="content-block">
+                <form id="supplier-ai-form" class="profile-ai-form profile-ai-form-stacked">
+                  <label class="profile-ai-label" for="supplier-ai-input">Your Question</label>
+                  <textarea
+                    id="supplier-ai-input"
+                    class="profile-ai-input profile-ai-textarea"
+                    placeholder="What is the best strategy to respond to the latest proposed increase while protecting margin and service continuity?"
+                    aria-label="Ask AI about this supplier negotiation"
+                    required
+                  ></textarea>
+
+                  <div class="profile-ai-upload-grid">
+                    <div>
+                      <label class="profile-ai-label" for="commodity-review-file">Upload Commodity Review</label>
+                      <input id="commodity-review-file" class="profile-ai-file" type="file" accept=".txt,.md,.csv,.json,.pdf,.doc,.docx" />
+                      <p id="commodity-review-status" class="muted-text profile-ai-file-status">No file uploaded.</p>
+                    </div>
+                    <div>
+                      <label class="profile-ai-label" for="supplier-communication-file">Upload Supplier Communication</label>
+                      <input id="supplier-communication-file" class="profile-ai-file" type="file" accept=".txt,.md,.csv,.json,.pdf,.doc,.docx" />
+                      <p id="supplier-communication-status" class="muted-text profile-ai-file-status">No file uploaded.</p>
+                    </div>
+                  </div>
+
+                  <button id="supplier-ai-submit" class="ghost-btn" type="submit">Generate Strategic Advice</button>
+                </form>
+              </div>
+
+              <div class="content-block">
+                <h3>AI Strategic Advice</h3>
+                <div id="supplier-ai-answer" class="profile-ai-answer muted-text">
+                  Ask a negotiation question to generate supplier-specific strategic guidance.
+                </div>
+              </div>
             </div>
           </article>
         </section>
