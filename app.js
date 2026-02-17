@@ -1813,7 +1813,7 @@ function allNegotiations() {
 function allRecentNewsItems() {
   const news = [];
   suppliers.forEach((supplier) => {
-    itemsWithinDays(supplier.external.news || [], 183, 50).forEach((item) => {
+    buildSupplierMentions(supplier, 183, 50).forEach((item) => {
       news.push({
         supplierId: supplier.id,
         supplierName: supplier.name,
@@ -1821,7 +1821,7 @@ function allRecentNewsItems() {
         title: item.title,
         url: item.url,
         date: item.date || "",
-        summary: item.summary || ""
+        summary: item.summary || item.title || ""
       });
     });
   });
@@ -2294,6 +2294,38 @@ function itemsWithinDays(items = [], days = 183, maxItems = 10) {
     .slice(0, maxItems);
 }
 
+function buildSupplierMentions(supplier, days = 183, maxItems = 20) {
+  const fromNews = itemsWithinDays(supplier.external.news || [], days, 50).map((item) => ({
+    type: "news",
+    title: item.title || item.summary || `${supplier.name} mention`,
+    summary: item.summary || "",
+    date: item.date || "",
+    url: item.url || ""
+  }));
+
+  const fromEsg = buildExternalEsgStories(supplier, supplier.external)
+    .filter((item) => item?.url && item?.date && item.title !== "No ESG story in the last 6 months.")
+    .map((item) => ({
+      type: "esg",
+      title: item.title || item.summary || `${supplier.name} ESG mention`,
+      summary: item.summary || "",
+      date: item.date || "",
+      url: item.url || ""
+    }));
+
+  const deduped = [];
+  const seen = new Set();
+  [...fromNews, ...fromEsg].forEach((item) => {
+    if (!item.url) return;
+    const key = `${String(item.url).trim().toLowerCase()}|${String(item.title).trim().toLowerCase()}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    deduped.push(item);
+  });
+
+  return sortByRecency(deduped).slice(0, maxItems);
+}
+
 function buildExternalEsgStories(supplier, external) {
   const profile = ESG_LIBRARY[supplier.id];
   if (profile && profile.stories && profile.stories.length) {
@@ -2635,14 +2667,14 @@ function openProfile(id) {
     )
     .join("");
 
-  const recentNews = itemsWithinDays(supplier.external.news || [], 183, 10);
+  const recentNews = buildSupplierMentions(supplier, 183, 10);
   if (recentNews.length === 0) {
     document.getElementById("news-list").innerHTML = `<li>No news mentions in the last 6 months for this supplier.</li>`;
   } else {
   document.getElementById("news-list").innerHTML = recentNews
     .map(
       (item) =>
-        `<li><a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.title}</a><span class="news-date">(${item.date})</span></li>`
+        `<li><a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.title}</a><span class="news-date">(${item.date})</span>${item.type === "esg" ? `<span class="news-date"> ESG</span>` : ""}</li>`
     )
     .join("");
   }
