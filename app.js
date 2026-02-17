@@ -1956,8 +1956,15 @@ function renderNewsDashboard() {
   const newsItems = allRecentNewsItems().filter((item) => {
     if (!searchTerm.trim()) return true;
     const term = searchTerm.toLowerCase();
-    return `${item.title || ""} ${item.supplierName || ""} ${item.market || ""} ${item.summary || ""}`.toLowerCase().includes(term);
+    return `${item.title || ""} ${item.supplierName || ""} ${item.summary || ""}`.toLowerCase().includes(term);
   });
+
+  const conciseSummary = (item) => {
+    const text = String(item.summary || "").replace(/\s+/g, " ").trim();
+    if (!text) return "No AI summary available.";
+    if (text.length <= 140) return text;
+    return `${text.slice(0, 137).trimEnd()}...`;
+  };
 
   if (newsItems.length === 0) {
     dashboardDetailView.innerHTML = `<section class="market-group"><h3>News</h3><div class="detail-grid"><article class="supplier-detail-tile"><div class="supplier-detail-name">No recent news in the last 6 months.</div></article></div></section>`;
@@ -1973,8 +1980,8 @@ function renderNewsDashboard() {
             <tr>
               <th>Date</th>
               <th>Supplier</th>
-              <th>Market</th>
               <th>Story</th>
+              <th>AI Summary</th>
             </tr>
           </thead>
           <tbody>
@@ -1984,8 +1991,8 @@ function renderNewsDashboard() {
               <tr>
                 <td>${item.date || "-"}</td>
                 <td>${item.supplierName}</td>
-                <td>${item.market}</td>
                 <td><a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.title}</a></td>
+                <td>${conciseSummary(item)}</td>
               </tr>
             `
               )
