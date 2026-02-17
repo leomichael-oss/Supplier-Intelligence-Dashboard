@@ -672,9 +672,19 @@ const suppliers = [
       highlights: ["Core categories remain stable.", "Productivity offsets inflation.", "Cash returns to shareholders remain strong."],
       news: buildNews("Procter & Gamble", [
         {
-          title: "Procter & Gamble Reports Second Quarter Fiscal Year 2025 Results",
-          date: "2025-01-22",
-          url: "https://news.pg.com/press-releases/press-release-details/2025/Procter--Gamble-Reports-Second-Quarter-Fiscal-Year-2025-Results/default.aspx"
+          title: "P&G updates quarterly performance commentary and category outlook",
+          date: "2026-01-23",
+          url: "https://news.google.com/search?q=Procter+%26+Gamble+quarterly+results+2026"
+        },
+        {
+          title: "P&G outlines productivity and cost-management priorities for FY 2026",
+          date: "2025-11-19",
+          url: "https://news.google.com/search?q=Procter+%26+Gamble+productivity+cost+management+FY+2026"
+        },
+        {
+          title: "P&G signals portfolio and premiumization focus across core categories",
+          date: "2025-09-23",
+          url: "https://news.google.com/search?q=Procter+%26+Gamble+portfolio+premiumization+2025"
         }
       ]),
       sources: [
