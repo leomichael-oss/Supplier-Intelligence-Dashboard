@@ -38,17 +38,17 @@ const ESG_LIBRARY = {
       {
         date: "2025-06-25",
         summary: "Nestle announced it will remove synthetic food colors from its U.S. food and beverage portfolio, reflecting nutrition and consumer-health pressure.",
-        url: "https://apnews.com/article/nestle-food-colors-artificial-rfk-jr-79765eb339e1f4f7ef4e84fcd59ce5f6"
+        url: "https://news.google.com/search?q=Nestle+food+colors+artificial+additives"
       },
       {
         date: "2025-02-13",
         summary: "Nestle's sustainability performance reporting outlines progress and remaining gaps across GHG, deforestation, water, and responsible sourcing metrics.",
-        url: "https://www.nestle.com/sustainability/performance-reporting"
+        url: "https://news.google.com/search?q=Nestle+sustainability+performance+reporting"
       },
       {
         date: "2025-01-15",
         summary: "Nestle maintains human-rights disclosures focused on supply-chain due diligence, grievance mechanisms, and remediation governance.",
-        url: "https://www.nestle.com/sustainability/human-rights"
+        url: "https://news.google.com/search?q=Nestle+human+rights+supply+chain"
       }
     ]
   },
@@ -59,12 +59,12 @@ const ESG_LIBRARY = {
       {
         date: "2023-10-16",
         summary: "Kraft Heinz published its ESG report, detailing progress on hunger relief, nutrition reformulation, energy and waste intensity, and packaging transitions.",
-        url: "https://news.kraftheinzcompany.com/press-releases-details/2023/Kraft-Heinz-Releases-2023-Environmental-Social-Governance-Report-Revealing-Continued-Progress-Toward-Goals-Across-Three-Priority-Pillars/default.aspx"
+        url: "https://news.google.com/search?q=Kraft+Heinz+ESG+report+2023"
       },
       {
         date: "2023-07-31",
         summary: "Kraft Heinz set a target to reduce virgin plastic use by 20% by 2030, with portfolio-specific actions such as higher recycled-content packaging.",
-        url: "https://news.kraftheinzcompany.com/press-releases-details/2023/Kraft-Heinz-Announces-Goal-to-Reduce-the-Use-of-Virgin-Plastic-Globally-by-20-Percent--or-more-than-100-Million-Pounds--by-2030/default.aspx"
+        url: "https://news.google.com/search?q=Kraft+Heinz+reduce+virgin+plastic+2030"
       },
       {
         date: "2023-01-01",
@@ -106,7 +106,7 @@ const ESG_LIBRARY = {
       {
         date: "2024-12-01",
         summary: "P&G highlighted progress in responsible palm sourcing and received RSPO recognition, reinforcing supply-chain governance focus.",
-        url: "https://www.pgchemicals.com/news/sustainability/dec-2024-pgs-journey-to-palm-oil-shared-responsibility-excellence"
+        url: "https://us.pg.com/citizenship/"
       },
       {
         date: "2024-06-30",
@@ -143,7 +143,7 @@ const ESG_LIBRARY = {
       {
         date: "2025-06-09",
         summary: "Saputo issued its 2025 Promise Report with updates on climate performance, people metrics, and responsible sourcing initiatives.",
-        url: "https://saputo.gcs-web.com/news-releases/news-release-details/saputo-issues-its-2025-promise-report"
+        url: "https://www.saputo.com/en/investors"
       },
       {
         date: "2025-06-09",
@@ -164,7 +164,7 @@ const ESG_LIBRARY = {
       {
         date: "2025-01-01",
         summary: "General Mills' responsibility materials track commitments across climate, water, human rights, and packaging progress.",
-        url: "https://www.generalmills.com/responsibility"
+        url: "https://www.generalmills.com/impact"
       },
       {
         date: "2024-12-10",
@@ -248,7 +248,7 @@ const ESG_LIBRARY = {
       {
         date: "2024-06-18",
         summary: "Hershey updated and revalidated science-based emissions targets, including FLAG and non-FLAG Scope 3 pathways to 2030.",
-        url: "https://hershey.gcs-web.com/news-releases/news-release-details/hershey-updates-science-based-targets-it-advances-efforts-reduce"
+        url: "https://investors.thehersheycompany.com/"
       },
       {
         date: "2025-01-01",
@@ -258,7 +258,7 @@ const ESG_LIBRARY = {
       {
         date: "2025-01-01",
         summary: "Hershey's responsible sourcing disclosures detail due diligence on human rights and commodity-specific risk management.",
-        url: "https://edi.hersheys.com/en_us/home/sustainability/progress-on-priorities/responsible-sourcing.html"
+        url: "https://www.thehersheycompany.com/en_us/home/sustainability/progress-on-priorities/responsible-sourcing.html"
       }
     ]
   },
@@ -290,12 +290,12 @@ const ESG_LIBRARY = {
       {
         date: "2025-12-12",
         summary: "L'Oreal reported a tenth consecutive CDP triple-A score, highlighting progress in climate, forests, and water-security disclosures.",
-        url: "https://www.loreal.com/en/press-release/commitments/l%E2%80%99oreal-is-awarded-an-unprecedented-10th-consecutive-aaa-rating-from-cdp/"
+        url: "https://www.loreal-finance.com/en/"
       },
       {
         date: "2025-02-26",
         summary: "L'Oreal announced a ninth consecutive CDP triple-A cycle with updated performance indicators on renewable energy and traceable sourcing.",
-        url: "https://www.loreal.com/en/press-release/commitments/-l-oreal-groupe-achieves-ninth-consecutive-cdp-triple-a-score/"
+        url: "https://www.loreal-finance.com/en/annual-report-2024/social-and-environmental-highlights/"
       },
       {
         date: "2025-03-31",
@@ -417,14 +417,14 @@ const suppliers = [
         "Underlying trading operating profit margin increased to 17.2%."
       ],
       news: buildNews("Nestle", [
-        { title: "Nestle beats annual sales forecasts but sees margin dropping in 2025", date: "2025-02-13", url: "https://www.reuters.com/world/europe/nestle-annual-sales-slightly-below-forecast-sees-lower-margin-2025-2025-02-13/" },
-        { title: "Nestle to remove synthetic food colors from U.S. food and beverage portfolio", date: "2025-06-25", url: "https://apnews.com/article/nestle-food-colors-artificial-rfk-jr-79765eb339e1f4f7ef4e84fcd59ce5f6" },
-        { title: "Nestle sees lower annual organic sales growth after setting straight weak 2024", date: "2026-02-12", url: "https://www.reuters.com/world/europe/nestle-sees-lower-annual-organic-sales-growth-after-setting-straight-weak-2024-2026-02-12/" }
+        { title: "Nestle beats annual sales forecasts but sees margin dropping in 2025", date: "2025-02-13", url: "https://news.google.com/search?q=Nestle+annual+sales+margin+2025" },
+        { title: "Nestle to remove synthetic food colors from U.S. food and beverage portfolio", date: "2025-06-25", url: "https://news.google.com/search?q=Nestle+food+colors+artificial+additives" },
+        { title: "Nestle sees lower annual organic sales growth after setting straight weak 2024", date: "2026-02-12", url: "https://news.google.com/search?q=Nestle+organic+sales+growth+2026" }
       ]),
       sources: [
-        { label: "Nestle Full-Year 2024 Results", url: "https://www.nestle.com/media/pressreleases/allpressreleases/full-year-results-2024" },
+        { label: "Nestle Full-Year 2024 Results", url: "https://news.google.com/search?q=Nestle+full+year+2024+results" },
         { label: "Nestle Market Cap", url: "https://companiesmarketcap.com/nestle/marketcap/" },
-        { label: "Nestle Stock Price & 1Y Change", url: "https://companiesmarketcap.com/nestle/stock-price/" }
+        { label: "Nestle Stock Price & 1Y Change", url: "https://companiesmarketcap.com/page/search/?q=nestle" }
       ]
     }
   }),
@@ -505,14 +505,14 @@ const suppliers = [
       grossMarginYoyLabel: "-140 bps",
       highlights: ["Net sales declined 3.5% in FY 2025.", "Gross profit margin was 33.3%.", "Productivity remains a central margin lever."],
       news: buildNews("Kraft Heinz", [
-        { title: "Kraft Heinz posts lower annual sales as demand softens", date: "2025-02-12", url: "https://www.reuters.com/world/us/kraft-heinz-forecasts-annual-profit-below-estimates-2025-02-12/" },
-        { title: "Kraft Heinz now expects 2024 net sales at lower end of annual forecast", date: "2024-11-13", url: "https://www.reuters.com/business/retail-consumer/kraft-heinz-now-expects-2024-net-sales-lower-end-annual-forecast-2024-11-13/" },
-        { title: "Kraft Heinz reports fourth quarter and full year 2025 results", date: "2026-02-11", url: "https://news.kraftheinzcompany.com/press-releases-details/2026/The-Kraft-Heinz-Company-Reports-Fourth-Quarter-and-Full-Year-2025-Results/default.aspx" }
+        { title: "Kraft Heinz posts lower annual sales as demand softens", date: "2025-02-12", url: "https://news.google.com/search?q=Kraft+Heinz+annual+profit+forecast+2025" },
+        { title: "Kraft Heinz now expects 2024 net sales at lower end of annual forecast", date: "2024-11-13", url: "https://news.google.com/search?q=Kraft+Heinz+net+sales+forecast+2024" },
+        { title: "Kraft Heinz reports fourth quarter and full year 2025 results", date: "2026-02-11", url: "https://news.google.com/search?q=Kraft+Heinz+fourth+quarter+full+year+2025+results" }
       ]),
       sources: [
-        { label: "Kraft Heinz FY 2025 Results", url: "https://news.kraftheinzcompany.com/press-releases-details/2026/The-Kraft-Heinz-Company-Reports-Fourth-Quarter-and-Full-Year-2025-Results/default.aspx" },
+        { label: "Kraft Heinz FY 2025 Results", url: "https://news.google.com/search?q=Kraft+Heinz+FY+2025+results" },
         { label: "Kraft Heinz Market Cap", url: "https://companiesmarketcap.com/kraft-heinz/marketcap/" },
-        { label: "Kraft Heinz Stock Price & 1Y Change", url: "https://companiesmarketcap.com/kraft-heinz/stock-price/" }
+        { label: "Kraft Heinz Stock Price & 1Y Change", url: "https://companiesmarketcap.com/page/search/?q=kraft+heinz" }
       ]
     }
   }),
@@ -593,14 +593,14 @@ const suppliers = [
       grossMarginYoyLabel: "+35 bps",
       highlights: ["Revenue reached $91.854B.", "Gross profit increased year over year.", "Cash generation remains a strategic strength."],
       news: buildNews("PepsiCo", [
-        { title: "PepsiCo forecasts annual profit below estimates as demand for snacks slows", date: "2025-02-04", url: "https://www.reuters.com/world/us/pepsico-forecasts-annual-profit-below-estimates-demand-remains-sluggish-2025-02-04/" },
-        { title: "PepsiCo beats quarterly profit estimates on robust demand for sugar-free drinks", date: "2025-07-17", url: "https://www.reuters.com/world/us/pepsico-beats-quarterly-profit-estimates-robust-demand-sugar-free-drinks-2025-07-17/" },
-        { title: "PepsiCo to buy prebiotic soda brand Poppi in nearly $2 billion deal", date: "2025-03-17", url: "https://www.reuters.com/world/us/pepsico-buy-prebiotic-soda-brand-poppi-nearly-2-bln-deal-2025-03-17/" }
+        { title: "PepsiCo forecasts annual profit below estimates as demand for snacks slows", date: "2025-02-04", url: "https://news.google.com/search?q=PepsiCo+annual+profit+forecast+2025" },
+        { title: "PepsiCo beats quarterly profit estimates on robust demand for sugar-free drinks", date: "2025-07-17", url: "https://news.google.com/search?q=PepsiCo+quarterly+profit+2025+sugar-free" },
+        { title: "PepsiCo to buy prebiotic soda brand Poppi in nearly $2 billion deal", date: "2025-03-17", url: "https://news.google.com/search?q=PepsiCo+Poppi+acquisition" }
       ]),
       sources: [
         { label: "PepsiCo FY 2024 Results", url: "https://investors.pepsico.com/news-events/press-releases/detail/457/pepsico-reports-fourth-quarter-and-full-year-2024-results" },
         { label: "PepsiCo Market Cap", url: "https://companiesmarketcap.com/pepsico/marketcap/" },
-        { label: "PepsiCo Stock Price & 1Y Change", url: "https://companiesmarketcap.com/pepsico/stock-price/" }
+        { label: "PepsiCo Stock Price & 1Y Change", url: "https://companiesmarketcap.com/page/search/?q=pepsico" }
       ]
     }
   }),
@@ -678,9 +678,9 @@ const suppliers = [
         }
       ]),
       sources: [
-        { label: "P&G Investor Relations", url: "https://investor.pg.com" },
-        { label: "P&G Market Cap", url: "https://companiesmarketcap.com/procter-gamble/marketcap/" },
-        { label: "P&G Stock Price & 1Y Change", url: "https://companiesmarketcap.com/procter-gamble/stock-price/" }
+        { label: "P&G Investor Relations", url: "https://www.pginvestor.com/" },
+        { label: "P&G Market Cap", url: "https://companiesmarketcap.com/procter-and-gamble/marketcap/" },
+        { label: "P&G Stock Price & 1Y Change", url: "https://companiesmarketcap.com/page/search/?q=procter+and+gamble" }
       ]
     }
   }),
@@ -754,18 +754,18 @@ const suppliers = [
         {
           title: "Maple Leaf Foods Reports Third Quarter 2025 Financial Results",
           date: "2025-11-06",
-          url: "https://www.mapleleaffoods.com/wp-content/uploads/2025/11/2025-Q3-Earnings-News-Release-vf.pdf"
+          url: "https://mapleleaffoods.mediaroom.com/"
         },
         {
           title: "Maple Leaf Foods reports third-quarter profit and sales rise",
           date: "2025-11-06",
-          url: "https://www.bnnbloomberg.ca/business/2025/11/06/maple-leaf-foods-reports-third-quarter-profit-and-sales-rise/"
+          url: "https://mapleleaffoods.mediaroom.com/"
         }
       ]),
       sources: [
         { label: "Maple Leaf Investor Relations", url: "https://www.mapleleaffoods.com/investors/" },
         { label: "Maple Leaf Market Cap", url: "https://companiesmarketcap.com/maple-leaf-foods/marketcap/" },
-        { label: "Maple Leaf Stock Price & 1Y Change", url: "https://companiesmarketcap.com/maple-leaf-foods/stock-price/" }
+        { label: "Maple Leaf Stock Price & 1Y Change", url: "https://companiesmarketcap.com/page/search/?q=maple+leaf+foods" }
       ]
     }
   }),
@@ -839,18 +839,18 @@ const suppliers = [
         {
           title: "Saputo Inc. Fiscal 2025 Fourth Quarter and Fiscal Year Results",
           date: "2025-06-05",
-          url: "https://www.saputo.com/en/our-story/media/press-releases/saputo-inc-fiscal-2025-fourth-quarter-and-fiscal-year-results"
+          url: "https://www.saputo.com/en/investors"
         },
         {
           title: "Saputo Inc. Fiscal 2025 Third Quarter Results",
           date: "2025-02-06",
-          url: "https://www.saputo.com/en/our-story/media/press-releases/saputo-inc-fiscal-2025-third-quarter-results"
+          url: "https://www.saputo.com/en/investors"
         }
       ]),
       sources: [
         { label: "Saputo Investor Relations", url: "https://www.saputo.com/en/investors" },
         { label: "Saputo Market Cap", url: "https://companiesmarketcap.com/saputo/marketcap/" },
-        { label: "Saputo Stock Price & 1Y Change", url: "https://companiesmarketcap.com/saputo/stock-price/" }
+        { label: "Saputo Stock Price & 1Y Change", url: "https://companiesmarketcap.com/page/search/?q=saputo" }
       ]
     }
   }),
@@ -924,18 +924,18 @@ const suppliers = [
         {
           title: "General Mills Reports Fiscal 2025 Fourth-quarter and Full-year Results",
           date: "2025-06-25",
-          url: "https://www.generalmills.com/news/stories/General-Mills-Reports-Fiscal-2025-Fourth-quarter-and-Full-year-Results"
+          url: "https://www.generalmills.com/news/press-releases"
         },
         {
           title: "General Mills Reports Fiscal 2025 Third-quarter Results",
           date: "2025-03-19",
-          url: "https://www.generalmills.com/news/stories/General-Mills-Reports-Fiscal-2025-Third-quarter-Results"
+          url: "https://www.generalmills.com/news/press-releases"
         }
       ]),
       sources: [
-        { label: "General Mills Investor Relations", url: "https://investors.generalmills.com" },
+        { label: "General Mills Investor Relations", url: "https://www.generalmills.com/news/press-releases" },
         { label: "General Mills Market Cap", url: "https://companiesmarketcap.com/general-mills/marketcap/" },
-        { label: "General Mills Stock Price & 1Y Change", url: "https://companiesmarketcap.com/general-mills/stock-price/" }
+        { label: "General Mills Stock Price & 1Y Change", url: "https://companiesmarketcap.com/page/search/?q=general+mills" }
       ]
     }
   }),
@@ -1009,13 +1009,13 @@ const suppliers = [
         {
           title: "Kellanova Reports Third Quarter 2025 Results and Updates 2025 Outlook",
           date: "2025-11-06",
-          url: "https://investor.kellanova.com/news-releases/news-release-details/kellanova-reports-third-quarter-2025-results-and-updates-2025"
+          url: "https://investor.kellanova.com/news-events/news-releases"
         }
       ]),
       sources: [
         { label: "Kellanova Investor Relations", url: "https://investor.kellanova.com" },
-        { label: "Kellanova Market Cap", url: "https://companiesmarketcap.com/kellanova/marketcap/" },
-        { label: "Kellanova Stock Price & 1Y Change", url: "https://companiesmarketcap.com/kellanova/stock-price/" }
+        { label: "Kellanova Market Cap", url: "https://companiesmarketcap.com/page/search/?q=kellanova" },
+        { label: "Kellanova Stock Price & 1Y Change", url: "https://companiesmarketcap.com/page/search/?q=kellanova" }
       ]
     }
   }),
@@ -1089,7 +1089,7 @@ const suppliers = [
         {
           title: "Coca-Cola fourth-quarter revenue tops expectations",
           date: "2025-02-11",
-          url: "https://apnews.com/article/cocacola-earnings-sales-inflation-prices-profits-9f8fca9470fd53d0138f1561ce1f2ecd"
+          url: "https://news.google.com/search?q=Coca-Cola+earnings+inflation+pricing"
         },
         {
           title: "Coca-Cola reports fourth quarter and full year 2025 results",
@@ -1100,7 +1100,7 @@ const suppliers = [
       sources: [
         { label: "Coca-Cola Investor Relations", url: "https://investors.coca-colacompany.com" },
         { label: "Coca-Cola Market Cap", url: "https://companiesmarketcap.com/coca-cola/marketcap/" },
-        { label: "Coca-Cola Stock Price & 1Y Change", url: "https://companiesmarketcap.com/coca-cola/stock-price/" }
+        { label: "Coca-Cola Stock Price & 1Y Change", url: "https://companiesmarketcap.com/page/search/?q=coca-cola" }
       ]
     }
   }),
@@ -1179,13 +1179,13 @@ const suppliers = [
         {
           title: "Unilever latest results and presentations",
           date: "2026-02-12",
-          url: "https://www.unilever.com/investors/results-presentations-webcasts/latest-results/"
+          url: "https://www.unilever.com/investors/"
         }
       ]),
       sources: [
         { label: "Unilever Investor Relations", url: "https://www.unilever.com/investors/" },
         { label: "Unilever Market Cap", url: "https://companiesmarketcap.com/unilever/marketcap/" },
-        { label: "Unilever Stock Price & 1Y Change", url: "https://companiesmarketcap.com/unilever/stock-price/" }
+        { label: "Unilever Stock Price & 1Y Change", url: "https://companiesmarketcap.com/page/search/?q=unilever" }
       ]
     }
   }),
@@ -1256,13 +1256,13 @@ const suppliers = [
       grossMarginYoyLabel: "-20 bps",
       highlights: ["Confectionery remained the core growth contributor.", "Margin held despite elevated cocoa cost.", "Promotional intensity stayed disciplined."],
       news: buildNews("Hershey", [
-        { title: "Hershey forecasts annual profit below estimates on weak demand, high cocoa prices", date: "2025-02-06", url: "https://www.reuters.com/world/us/hershey-forecasts-annual-profit-below-estimates-high-cocoa-prices-2025-02-06/" },
+        { title: "Hershey forecasts annual profit below estimates on weak demand, high cocoa prices", date: "2025-02-06", url: "https://news.google.com/search?q=Hershey+annual+profit+cocoa+prices" },
         { title: "Hershey Q4 earnings call materials", date: "2026-02-12", url: "https://investors.thehersheycompany.com/" }
       ]),
       sources: [
         { label: "Hershey Investor Relations", url: "https://investors.thehersheycompany.com/" },
-        { label: "Hershey Market Cap", url: "https://companiesmarketcap.com/hershey/marketcap/" },
-        { label: "Hershey Stock Price & 1Y Change", url: "https://companiesmarketcap.com/hershey/stock-price/" }
+        { label: "Hershey Market Cap", url: "https://companiesmarketcap.com/page/search/?q=hershey" },
+        { label: "Hershey Stock Price & 1Y Change", url: "https://companiesmarketcap.com/page/search/?q=hershey" }
       ]
     }
   }),
@@ -1333,12 +1333,12 @@ const suppliers = [
       grossMarginYoyLabel: "+20 bps",
       highlights: ["Premium assortment maintained growth momentum.", "Mix remained favorable despite cost pressure.", "Seasonal execution was strong."],
       news: buildNews("Lindt", [
-        { title: "Lindt sales growth holds as premium chocolate demand stays resilient", date: "2025-03-05", url: "https://www.reuters.com/site-search/?query=Lindt" }
+        { title: "Lindt sales growth holds as premium chocolate demand stays resilient", date: "2025-03-05", url: "https://news.google.com/search?q=Lindt+sales+growth+premium+chocolate" }
       ]),
       sources: [
         { label: "Lindt Investor Relations", url: "https://www.lindt-spruengli.com/investors/" },
-        { label: "Lindt Market Cap", url: "https://companiesmarketcap.com/lindt-sprungli/marketcap/" },
-        { label: "Lindt Stock Price & 1Y Change", url: "https://companiesmarketcap.com/lindt-sprungli/stock-price/" }
+        { label: "Lindt Market Cap", url: "https://companiesmarketcap.com/page/search/?q=lindt" },
+        { label: "Lindt Stock Price & 1Y Change", url: "https://companiesmarketcap.com/page/search/?q=lindt" }
       ]
     }
   }),
@@ -1409,12 +1409,12 @@ const suppliers = [
       grossMarginYoyLabel: "+35 bps",
       highlights: ["Dermocosmetics and premium beauty stayed strong.", "Margin quality remained high.", "Innovation cadence supported share gains."],
       news: buildNews("L'Oreal", [
-        { title: "L'Oreal posts resilient sales as premium beauty demand holds", date: "2025-02-11", url: "https://www.reuters.com/site-search/?query=L%27Oreal" }
+        { title: "L'Oreal posts resilient sales as premium beauty demand holds", date: "2025-02-11", url: "https://news.google.com/search?q=Loreal+sales+premium+beauty" }
       ]),
       sources: [
         { label: "L'Oreal Investor Relations", url: "https://www.loreal-finance.com/en/" },
-        { label: "L'Oreal Market Cap", url: "https://companiesmarketcap.com/loreal/marketcap/" },
-        { label: "L'Oreal Stock Price & 1Y Change", url: "https://companiesmarketcap.com/loreal/stock-price/" }
+        { label: "L'Oreal Market Cap", url: "https://companiesmarketcap.com/page/search/?q=loreal" },
+        { label: "L'Oreal Stock Price & 1Y Change", url: "https://companiesmarketcap.com/page/search/?q=loreal" }
       ]
     }
   }),
@@ -1485,13 +1485,13 @@ const suppliers = [
       grossMarginYoyLabel: "+25 bps",
       highlights: ["Consumer health demand remained durable.", "Margin profile stayed stable.", "Portfolio investments focused on core brands."],
       news: buildNews("Kenvue", [
-        { title: "Kenvue forecasts annual profit below estimates on cautious consumer spending", date: "2025-02-06", url: "https://www.reuters.com/world/us/kenvue-forecasts-annual-profit-below-estimates-2025-02-06/" },
-        { title: "Kenvue investor relations updates", date: "2026-02-12", url: "https://investors.kenvue.com/" }
+        { title: "Kenvue forecasts annual profit below estimates on cautious consumer spending", date: "2025-02-06", url: "https://news.google.com/search?q=Kenvue+annual+profit+forecast" },
+        { title: "Kenvue investor relations updates", date: "2026-02-12", url: "https://www.kenvue.com/" }
       ]),
       sources: [
-        { label: "Kenvue Investor Relations", url: "https://investors.kenvue.com/" },
+        { label: "Kenvue Investor Relations", url: "https://www.kenvue.com/" },
         { label: "Kenvue Market Cap", url: "https://companiesmarketcap.com/kenvue/marketcap/" },
-        { label: "Kenvue Stock Price & 1Y Change", url: "https://companiesmarketcap.com/kenvue/stock-price/" }
+        { label: "Kenvue Stock Price & 1Y Change", url: "https://companiesmarketcap.com/page/search/?q=kenvue" }
       ]
     }
   })
