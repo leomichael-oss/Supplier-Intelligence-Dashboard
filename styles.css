@@ -868,6 +868,14 @@ tbody tr:hover {
   gap: 0.9rem;
 }
 
+.portfolio-head {
+  margin-bottom: 0.55rem;
+}
+
+.portfolio-tile-card {
+  border-top: 1px solid rgba(110, 206, 255, 0.28);
+}
+
 .profile-main {
   border: 1px solid #e1dacb;
   border-radius: 12px;

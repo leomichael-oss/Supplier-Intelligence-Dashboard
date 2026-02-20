@@ -2229,6 +2229,7 @@ async function setProfileTab(tabName, opts = {}) {
 
 function renderProfileTiles(internal) {
   const root = document.getElementById("profile-tiles");
+  if (!root) return;
   root.innerHTML = `
     <div class="profile-tile">
       <div class="profile-tile-label">Items Listed</div>
