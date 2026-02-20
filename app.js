@@ -1634,6 +1634,7 @@ let searchTerm = "";
 let currentProfileSupplier = null;
 let currentNegotiation = null;
 let metricModalState = null;
+let metricModalCloseTimer = null;
 const THEME_STORAGE_KEY = "supplier-intel-theme";
 const NEGOTIATION_STORAGE_KEY = "supplier-negotiations-v1";
 
@@ -2192,7 +2193,7 @@ function renderOperationalMetrics(elementId, metrics) {
       const metricKey = tile.getAttribute("data-metric-key");
       const metricLabel = tile.getAttribute("data-metric-label") || "Metric";
       if (!metricKey || !currentProfileSupplier) return;
-      openMetricModal(metricKey, metricLabel);
+      openMetricModal(metricKey, metricLabel, tile);
     });
   });
 }
@@ -2327,20 +2328,49 @@ function setMetricTimeframe(nextTimeframe) {
 }
 
 function closeMetricModal() {
-  if (!metricModalOverlay) return;
-  metricModalOverlay.classList.add("hidden");
-  metricModalOverlay.setAttribute("aria-hidden", "true");
-  metricModalState = null;
+  if (!metricModalOverlay || metricModalOverlay.classList.contains("hidden")) return;
+  metricModalOverlay.classList.remove("modal-visible");
+  metricModalOverlay.classList.add("modal-closing");
+  if (metricModalCloseTimer) clearTimeout(metricModalCloseTimer);
+  metricModalCloseTimer = setTimeout(() => {
+    metricModalOverlay.classList.add("hidden");
+    metricModalOverlay.classList.remove("modal-closing");
+    metricModalOverlay.setAttribute("aria-hidden", "true");
+    metricModalState = null;
+    metricModalCloseTimer = null;
+  }, 220);
 }
 
-function openMetricModal(metricKey, metricLabel) {
+function openMetricModal(metricKey, metricLabel, originTile) {
   if (!currentProfileSupplier || !metricModalOverlay) return;
+  if (metricModalCloseTimer) {
+    clearTimeout(metricModalCloseTimer);
+    metricModalCloseTimer = null;
+  }
   metricModalState = { metricKey, metricLabel, timeframe: "1y" };
   if (metricModalTitle) metricModalTitle.textContent = `${metricLabel} Trend`;
   if (metricModalSubtitle) metricModalSubtitle.textContent = `${currentProfileSupplier.name} • Click outside to close`;
   setMetricTimeframe("1y");
+  if (originTile) {
+    originTile.classList.add("metric-pop-origin");
+    setTimeout(() => originTile.classList.remove("metric-pop-origin"), 260);
+  }
   metricModalOverlay.classList.remove("hidden");
+  metricModalOverlay.classList.remove("modal-closing");
+  metricModalOverlay.classList.remove("modal-visible");
   metricModalOverlay.setAttribute("aria-hidden", "false");
+  requestAnimationFrame(() => {
+    const modalEl = document.getElementById("metric-modal");
+    if (modalEl && originTile) {
+      const tileRect = originTile.getBoundingClientRect();
+      const modalRect = modalEl.getBoundingClientRect();
+      const xPct = ((tileRect.left + tileRect.width / 2 - modalRect.left) / modalRect.width) * 100;
+      const yPct = ((tileRect.top + tileRect.height / 2 - modalRect.top) / modalRect.height) * 100;
+      const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+      modalEl.style.transformOrigin = `${clamp(xPct, 8, 92).toFixed(1)}% ${clamp(yPct, 8, 92).toFixed(1)}%`;
+    }
+    metricModalOverlay.classList.add("modal-visible");
+  });
 }
 
 function renderBullets(elementId, items) {
