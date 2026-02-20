@@ -1618,6 +1618,13 @@ const commodityReviewFileInput = document.getElementById("commodity-review-file"
 const supplierCommunicationFileInput = document.getElementById("supplier-communication-file");
 const commodityReviewStatus = document.getElementById("commodity-review-status");
 const supplierCommunicationStatus = document.getElementById("supplier-communication-status");
+const metricModalOverlay = document.getElementById("metric-modal-overlay");
+const metricModalTitle = document.getElementById("metric-modal-title");
+const metricModalSubtitle = document.getElementById("metric-modal-subtitle");
+const metricChartWrap = document.getElementById("metric-chart-wrap");
+const metricModalCloseBtn = document.getElementById("metric-modal-close");
+const metricTf1yBtn = document.getElementById("metric-tf-1y");
+const metricTf5yBtn = document.getElementById("metric-tf-5y");
 
 let sortState = { key: "sales", direction: "desc" };
 let dashboardMode = "summary";
@@ -1626,6 +1633,7 @@ let profileTabTransitioning = false;
 let searchTerm = "";
 let currentProfileSupplier = null;
 let currentNegotiation = null;
+let metricModalState = null;
 const THEME_STORAGE_KEY = "supplier-intel-theme";
 const NEGOTIATION_STORAGE_KEY = "supplier-negotiations-v1";
 
@@ -2167,8 +2175,9 @@ function renderOperationalMetrics(elementId, metrics) {
         deltaClass = yoyClass(metric.delta);
         deltaText = `${pct(metric.delta)} ${metric.deltaLabel || ""}`;
       }
+      const clickable = Boolean(metric.metricKey);
       return `
-        <div class="op-metric">
+        <div class="op-metric ${clickable ? "metric-clickable" : ""}" ${clickable ? `data-metric-key="${metric.metricKey}" data-metric-label="${metric.label}"` : ""}>
           <p class="op-metric-label">${metric.label}</p>
           <p class="op-metric-value">${metric.value}</p>
           ${deltaText ? `<p class="op-metric-delta ${deltaClass}">${deltaText}</p>` : ""}
@@ -2177,6 +2186,161 @@ function renderOperationalMetrics(elementId, metrics) {
       `;
     })
     .join("");
+
+  root.querySelectorAll(".metric-clickable").forEach((tile) => {
+    tile.addEventListener("click", () => {
+      const metricKey = tile.getAttribute("data-metric-key");
+      const metricLabel = tile.getAttribute("data-metric-label") || "Metric";
+      if (!metricKey || !currentProfileSupplier) return;
+      openMetricModal(metricKey, metricLabel);
+    });
+  });
+}
+
+function metricSeed(text) {
+  let hash = 0;
+  for (let i = 0; i < text.length; i += 1) hash = (hash * 31 + text.charCodeAt(i)) >>> 0;
+  return hash || 1;
+}
+
+function metricValueFormatter(metricKey, value) {
+  switch (metricKey) {
+    case "sales":
+    case "margin":
+      return moneyPlain(value);
+    case "tonnage":
+      return `${numberCompact(value)} t`;
+    case "aic":
+    case "aip":
+      return `$${value.toFixed(2)}`;
+    case "serviceLevel":
+      return `${value.toFixed(1)}%`;
+    default:
+      return numberCompact(value);
+  }
+}
+
+function metricSpecForSupplier(supplier, metricKey) {
+  const internal = supplier.internal;
+  const map = {
+    sales: { current: internal.sales, yoy: internal.salesYoy },
+    margin: { current: internal.margin, yoy: internal.marginYoy },
+    tonnage: { current: internal.tonnage, yoy: internal.tonnageYoy },
+    aic: { current: internal.aic, yoy: internal.aicYoy },
+    aip: { current: internal.aip, yoy: internal.aipYoy },
+    serviceLevel: { current: internal.serviceLevel, yoy: internal.serviceYoy }
+  };
+  return map[metricKey] || null;
+}
+
+function generateMetricSeries(supplier, metricKey, timeframe = "1y") {
+  const spec = metricSpecForSupplier(supplier, metricKey);
+  if (!spec) return [];
+
+  const current = Number(spec.current || 0);
+  const annualRate = Math.max(-0.35, Math.min(0.35, Number(spec.yoy || 0) / 100));
+  const seed = metricSeed(`${supplier.id}-${metricKey}`);
+
+  if (timeframe === "5y") {
+    const thisYear = new Date().getFullYear();
+    const years = [thisYear - 4, thisYear - 3, thisYear - 2, thisYear - 1, thisYear];
+    const cagr = annualRate * 0.7;
+    const start = current / Math.pow(1 + cagr, 4);
+    return years.map((year, i) => {
+      const base = start * Math.pow(1 + cagr, i);
+      const wiggle = 1 + Math.sin((seed + i) * 1.23) * 0.02 + Math.cos((seed + i) * 0.71) * 0.01;
+      return { label: String(year), value: Math.max(0, base * wiggle) };
+    });
+  }
+
+  const months = ["Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb"];
+  const start = current / Math.max(0.45, 1 + annualRate);
+  return months.map((month, i) => {
+    const progress = i / 11;
+    const base = start * Math.pow(1 + annualRate, progress);
+    const wiggle = 1 + Math.sin((seed + i) * 1.37) * 0.018 + Math.cos((seed + i) * 0.92) * 0.008;
+    return { label: month, value: Math.max(0, base * wiggle) };
+  });
+}
+
+function renderMetricChart() {
+  if (!metricModalState || !currentProfileSupplier || !metricChartWrap) return;
+  const { metricKey, timeframe } = metricModalState;
+  const points = generateMetricSeries(currentProfileSupplier, metricKey, timeframe);
+  if (!points.length) {
+    metricChartWrap.innerHTML = `<p class="muted-text">No trend data available for this metric.</p>`;
+    return;
+  }
+
+  const width = 860;
+  const height = 320;
+  const pad = { top: 24, right: 16, bottom: 44, left: 86 };
+  const min = Math.min(...points.map((p) => p.value));
+  const max = Math.max(...points.map((p) => p.value));
+  const span = Math.max(1e-9, max - min);
+  const yMin = min - span * 0.12;
+  const yMax = max + span * 0.12;
+
+  const x = (i) => pad.left + (i / (points.length - 1 || 1)) * (width - pad.left - pad.right);
+  const y = (v) => pad.top + ((yMax - v) / (yMax - yMin || 1)) * (height - pad.top - pad.bottom);
+
+  const line = points.map((p, i) => `${x(i)},${y(p.value)}`).join(" ");
+  const area = `${pad.left},${height - pad.bottom} ${line} ${x(points.length - 1)},${height - pad.bottom}`;
+  const yTicks = [0, 1, 2, 3].map((i) => yMin + ((yMax - yMin) * i) / 3).reverse();
+
+  metricChartWrap.innerHTML = `
+    <svg class="metric-chart-svg" viewBox="0 0 ${width} ${height}" aria-label="Metric trend chart">
+      ${yTicks
+        .map(
+          (tick) => `
+        <line class="metric-grid-line" x1="${pad.left}" y1="${y(tick)}" x2="${width - pad.right}" y2="${y(tick)}"></line>
+        <text class="metric-axis-text" x="${pad.left - 10}" y="${y(tick) + 4}" text-anchor="end">${metricValueFormatter(metricKey, tick)}</text>
+      `
+        )
+        .join("")}
+      <polygon class="metric-area" points="${area}"></polygon>
+      <polyline class="metric-line" points="${line}"></polyline>
+      ${points
+        .map(
+          (p, i) => `
+        <circle class="metric-point" cx="${x(i)}" cy="${y(p.value)}" r="3.6"></circle>
+      `
+        )
+        .join("")}
+      ${points
+        .map(
+          (p, i) => `
+        <text class="metric-axis-text" x="${x(i)}" y="${height - 16}" text-anchor="middle">${p.label}</text>
+      `
+        )
+        .join("")}
+    </svg>
+  `;
+}
+
+function setMetricTimeframe(nextTimeframe) {
+  if (!metricModalState) return;
+  metricModalState.timeframe = nextTimeframe;
+  if (metricTf1yBtn) metricTf1yBtn.classList.toggle("active", nextTimeframe === "1y");
+  if (metricTf5yBtn) metricTf5yBtn.classList.toggle("active", nextTimeframe === "5y");
+  renderMetricChart();
+}
+
+function closeMetricModal() {
+  if (!metricModalOverlay) return;
+  metricModalOverlay.classList.add("hidden");
+  metricModalOverlay.setAttribute("aria-hidden", "true");
+  metricModalState = null;
+}
+
+function openMetricModal(metricKey, metricLabel) {
+  if (!currentProfileSupplier || !metricModalOverlay) return;
+  metricModalState = { metricKey, metricLabel, timeframe: "1y" };
+  if (metricModalTitle) metricModalTitle.textContent = `${metricLabel} Trend`;
+  if (metricModalSubtitle) metricModalSubtitle.textContent = `${currentProfileSupplier.name} • Click outside to close`;
+  setMetricTimeframe("1y");
+  metricModalOverlay.classList.remove("hidden");
+  metricModalOverlay.setAttribute("aria-hidden", "false");
 }
 
 function renderBullets(elementId, items) {
@@ -2629,12 +2793,12 @@ function openProfile(id) {
   showNegotiationListView();
 
   const internalTopMetrics = [
-    { label: "Sales", value: currency(supplier.internal.sales), delta: supplier.internal.salesYoy, deltaLabel: "YoY" },
-    { label: "Margin", value: currency(supplier.internal.margin), delta: supplier.internal.marginYoy, deltaLabel: "YoY" },
-    { label: "Tonnage", value: `${numberCompact(supplier.internal.tonnage)} t`, delta: supplier.internal.tonnageYoy, deltaLabel: "YoY" },
-    { label: "AIC", value: `$${supplier.internal.aic.toFixed(2)}`, delta: supplier.internal.aicYoy, deltaLabel: "YoY" },
-    { label: "AIP", value: `$${supplier.internal.aip.toFixed(2)}`, delta: supplier.internal.aipYoy, deltaLabel: "YoY" },
-    { label: "Service Level", value: `${supplier.internal.serviceLevel.toFixed(1)}%`, delta: supplier.internal.serviceYoy, deltaLabel: "YoY" }
+    { metricKey: "sales", label: "Sales", value: currency(supplier.internal.sales), delta: supplier.internal.salesYoy, deltaLabel: "YoY" },
+    { metricKey: "margin", label: "Margin", value: currency(supplier.internal.margin), delta: supplier.internal.marginYoy, deltaLabel: "YoY" },
+    { metricKey: "tonnage", label: "Tonnage", value: `${numberCompact(supplier.internal.tonnage)} t`, delta: supplier.internal.tonnageYoy, deltaLabel: "YoY" },
+    { metricKey: "aic", label: "AIC", value: `$${supplier.internal.aic.toFixed(2)}`, delta: supplier.internal.aicYoy, deltaLabel: "YoY" },
+    { metricKey: "aip", label: "AIP", value: `$${supplier.internal.aip.toFixed(2)}`, delta: supplier.internal.aipYoy, deltaLabel: "YoY" },
+    { metricKey: "serviceLevel", label: "Service Level", value: `${supplier.internal.serviceLevel.toFixed(1)}%`, delta: supplier.internal.serviceYoy, deltaLabel: "YoY" }
   ];
   renderBullets("internal-summary", supplier.internal.summary);
   renderOperationalMetrics("internal-top-metrics", internalTopMetrics);
@@ -2792,6 +2956,7 @@ document.querySelectorAll("#supplier-table th").forEach((th) => {
 });
 
 backBtn.addEventListener("click", () => {
+  closeMetricModal();
   currentProfileSupplier = null;
   profileView.classList.remove("active");
   dashboardView.classList.add("active");
@@ -2942,6 +3107,28 @@ if (dashboardAiForm && dashboardAiInput && dashboardAiAnswer) {
     }
   });
 }
+
+if (metricModalCloseBtn) {
+  metricModalCloseBtn.addEventListener("click", closeMetricModal);
+}
+
+if (metricModalOverlay) {
+  metricModalOverlay.addEventListener("click", (event) => {
+    if (event.target === metricModalOverlay) closeMetricModal();
+  });
+}
+
+if (metricTf1yBtn) {
+  metricTf1yBtn.addEventListener("click", () => setMetricTimeframe("1y"));
+}
+
+if (metricTf5yBtn) {
+  metricTf5yBtn.addEventListener("click", () => setMetricTimeframe("5y"));
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && metricModalState) closeMetricModal();
+});
 
 initThemeToggle();
 renderTable();

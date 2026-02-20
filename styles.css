@@ -797,6 +797,17 @@ tbody tr:hover {
   padding: 0.7rem 0.55rem;
 }
 
+.op-metric.metric-clickable {
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.op-metric.metric-clickable:hover {
+  transform: translateY(-2px);
+  border-color: #4bbcff;
+  box-shadow: 0 8px 20px rgba(30, 122, 190, 0.2);
+}
+
 .op-metric-label {
   margin: 0;
   color: var(--muted);
@@ -1053,6 +1064,87 @@ a {
   margin-top: 0.25rem;
   color: var(--muted);
   line-height: 1.45;
+}
+
+.metric-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(3, 10, 20, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.metric-modal {
+  width: min(920px, calc(100vw - 2rem));
+  border-radius: 16px;
+  border: 1px solid #2f5878;
+  background: linear-gradient(165deg, rgba(14, 32, 53, 0.98), rgba(11, 26, 44, 0.98));
+  box-shadow: 0 22px 48px rgba(3, 11, 25, 0.5);
+  padding: 1rem;
+}
+
+.metric-modal-head,
+.metric-modal-subhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.metric-modal-head h3 {
+  margin: 0;
+}
+
+.metric-modal-subhead {
+  margin-top: 0.45rem;
+}
+
+.metric-chart-wrap {
+  margin-top: 0.8rem;
+  border: 1px solid #2b5373;
+  border-radius: 12px;
+  padding: 0.65rem;
+  background: rgba(11, 30, 50, 0.75);
+}
+
+.metric-chart-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.metric-axis-text {
+  fill: #9eb3cd;
+  font-size: 12px;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.metric-grid-line {
+  stroke: rgba(130, 185, 225, 0.2);
+  stroke-width: 1;
+}
+
+.metric-line {
+  stroke: #61d3ff;
+  stroke-width: 3;
+  fill: none;
+}
+
+.metric-area {
+  fill: rgba(97, 211, 255, 0.12);
+}
+
+.metric-point {
+  fill: #61d3ff;
+}
+
+.metric-timeframe-toggle .toggle-btn {
+  min-width: 120px;
 }
 
 .total-row td {
@@ -1431,6 +1523,29 @@ body.light-mode .negotiation-card {
 
 body.light-mode .negotiation-card:hover {
   background: #edf6ff;
+}
+
+body.light-mode .metric-modal-overlay {
+  background: rgba(16, 40, 64, 0.3);
+}
+
+body.light-mode .metric-modal {
+  background: linear-gradient(170deg, #ffffff, #eef7ff);
+  border-color: #b8d4ea;
+  box-shadow: 0 22px 46px rgba(45, 100, 146, 0.22);
+}
+
+body.light-mode .metric-chart-wrap {
+  background: #f5faff;
+  border-color: #bfd9ee;
+}
+
+body.light-mode .metric-axis-text {
+  fill: #58758f;
+}
+
+body.light-mode .metric-grid-line {
+  stroke: rgba(96, 141, 177, 0.25);
 }
 
 body.light-mode .total-row td {

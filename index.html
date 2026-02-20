@@ -341,6 +341,23 @@
       </section>
     </main>
 
+    <div id="metric-modal-overlay" class="metric-modal-overlay hidden" aria-hidden="true">
+      <div id="metric-modal" class="metric-modal" role="dialog" aria-modal="true" aria-labelledby="metric-modal-title">
+        <div class="metric-modal-head">
+          <h3 id="metric-modal-title">Metric Trend</h3>
+          <button id="metric-modal-close" class="ghost-btn" type="button">Close</button>
+        </div>
+        <div class="metric-modal-subhead">
+          <p id="metric-modal-subtitle" class="muted-text"></p>
+          <div class="profile-toggle metric-timeframe-toggle" role="tablist" aria-label="Metric timeframe">
+            <button id="metric-tf-1y" class="toggle-btn active" type="button">Last Year</button>
+            <button id="metric-tf-5y" class="toggle-btn" type="button">Last 5 Years</button>
+          </div>
+        </div>
+        <div id="metric-chart-wrap" class="metric-chart-wrap"></div>
+      </div>
+    </div>
+
     <script src="app.js"></script>
   </body>
 </html>
