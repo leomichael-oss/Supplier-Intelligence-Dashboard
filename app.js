@@ -1630,6 +1630,7 @@ const costRowModal = document.getElementById("cost-row-modal");
 const costRowModalTitle = document.getElementById("cost-row-modal-title");
 const costRowModalSubtitle = document.getElementById("cost-row-modal-subtitle");
 const costRowModalCloseBtn = document.getElementById("cost-row-modal-close");
+const costRowDetailTableHead = document.querySelector("#cost-row-detail-table thead tr");
 const costRowDetailTableBody = document.querySelector("#cost-row-detail-table tbody");
 
 let sortState = { key: "sales", direction: "desc" };
@@ -2431,8 +2432,49 @@ function buildCostRowDetails(supplier, row, rowType) {
   });
 }
 
-function renderCostRowDetailTable(details) {
-  if (!costRowDetailTableBody) return;
+function renderCostRowDetailTable(details, rowType) {
+  if (!costRowDetailTableBody || !costRowDetailTableHead) return;
+  const isInflight = rowType === "inflight";
+
+  if (isInflight) {
+    costRowDetailTableHead.innerHTML = `
+      <th>Category</th>
+      <th>Product Line</th>
+      <th>Rationale</th>
+      <th>Proposed $</th>
+      <th>Justified $</th>
+      <th>Proposed %</th>
+      <th>Justified %</th>
+    `;
+    costRowDetailTableBody.innerHTML = details
+      .map(
+        (d) => `
+      <tr>
+        <td>${d.category}</td>
+        <td>${d.productLine}</td>
+        <td>${d.rationale}</td>
+        <td>${moneyPlain(d.proposed)}</td>
+        <td>${moneyPlain(d.justified)}</td>
+        <td class="${yoyClass(d.proposedPct)}">${pct(d.proposedPct)}</td>
+        <td class="${yoyClass(d.justifiedPct)}">${pct(d.justifiedPct)}</td>
+      </tr>
+    `
+      )
+      .join("");
+    return;
+  }
+
+  costRowDetailTableHead.innerHTML = `
+    <th>Category</th>
+    <th>Product Line</th>
+    <th>Rationale</th>
+    <th>Proposed $</th>
+    <th>Justified $</th>
+    <th>Accepted $</th>
+    <th>Proposed %</th>
+    <th>Justified %</th>
+    <th>Accepted %</th>
+  `;
   costRowDetailTableBody.innerHTML = details
     .map(
       (d) => `
@@ -2483,7 +2525,7 @@ function openCostRowModal(supplier, row, rowType, originRow) {
   }
 
   const details = buildCostRowDetails(supplier, row, rowType);
-  renderCostRowDetailTable(details);
+  renderCostRowDetailTable(details, rowType);
 
   if (originRow) {
     originRow.classList.add("metric-pop-origin");
