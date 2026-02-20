@@ -217,6 +217,14 @@ tr.cost-row-clickable:hover {
   background: rgba(73, 162, 222, 0.16);
 }
 
+tr.category-row-clickable {
+  cursor: pointer;
+}
+
+tr.category-row-clickable:hover {
+  background: rgba(79, 176, 236, 0.16);
+}
+
 .row-link {
   color: var(--accent);
   font-weight: 700;
@@ -1137,6 +1145,18 @@ a {
 #cost-row-detail-table td:nth-child(3) {
   min-width: 280px;
   white-space: normal;
+}
+
+#category-breakout-detail-table {
+  min-width: 1280px;
+}
+
+#category-breakout-detail-table .current-supplier-row {
+  background: rgba(63, 170, 236, 0.18);
+}
+
+#category-breakout-detail-table .other-row {
+  background: rgba(80, 116, 150, 0.14);
 }
 
 .metric-modal-overlay.modal-visible .metric-modal {

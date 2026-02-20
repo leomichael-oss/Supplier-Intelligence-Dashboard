@@ -388,6 +388,36 @@
       </div>
     </div>
 
+    <div id="category-modal-overlay" class="metric-modal-overlay hidden" aria-hidden="true">
+      <div id="category-modal" class="metric-modal cost-row-modal" role="dialog" aria-modal="true" aria-labelledby="category-modal-title">
+        <div class="metric-modal-head">
+          <h3 id="category-modal-title">Category Supplier Ranking</h3>
+          <button id="category-modal-close" class="ghost-btn" type="button">Close</button>
+        </div>
+        <div class="metric-modal-subhead">
+          <p id="category-modal-subtitle" class="muted-text"></p>
+        </div>
+        <div class="table-wrap compact-table-wrap">
+          <table id="category-breakout-detail-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Supplier Name</th>
+                <th>Top Brand</th>
+                <th>Sales Penetration %</th>
+                <th>COGS $</th>
+                <th>Sales $</th>
+                <th>YOY % Sales Change</th>
+                <th>Margin $</th>
+                <th>YOY % Margin Change</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <script src="app.js"></script>
   </body>
 </html>

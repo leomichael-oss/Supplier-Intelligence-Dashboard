@@ -1632,6 +1632,12 @@ const costRowModalSubtitle = document.getElementById("cost-row-modal-subtitle");
 const costRowModalCloseBtn = document.getElementById("cost-row-modal-close");
 const costRowDetailTableHead = document.querySelector("#cost-row-detail-table thead tr");
 const costRowDetailTableBody = document.querySelector("#cost-row-detail-table tbody");
+const categoryModalOverlay = document.getElementById("category-modal-overlay");
+const categoryModal = document.getElementById("category-modal");
+const categoryModalTitle = document.getElementById("category-modal-title");
+const categoryModalSubtitle = document.getElementById("category-modal-subtitle");
+const categoryModalCloseBtn = document.getElementById("category-modal-close");
+const categoryBreakoutDetailTableBody = document.querySelector("#category-breakout-detail-table tbody");
 
 let sortState = { key: "sales", direction: "desc" };
 let dashboardMode = "summary";
@@ -1643,6 +1649,7 @@ let currentNegotiation = null;
 let metricModalState = null;
 let metricModalCloseTimer = null;
 let costRowModalCloseTimer = null;
+let categoryModalCloseTimer = null;
 const THEME_STORAGE_KEY = "supplier-intel-theme";
 const NEGOTIATION_STORAGE_KEY = "supplier-negotiations-v1";
 
@@ -2550,6 +2557,170 @@ function openCostRowModal(supplier, row, rowType, originRow) {
   });
 }
 
+function buildCategoryRankingRows(categoryName, focusSupplierId) {
+  const entries = suppliers
+    .map((supplier) => {
+      const cat = (supplier.internal.categories || []).find((c) => c.category === categoryName);
+      if (!cat) return null;
+      const marginRate = supplier.internal.sales ? supplier.internal.margin / supplier.internal.sales : 0;
+      const catMargin = cat.supplierSales * marginRate;
+      return {
+        supplierId: supplier.id,
+        supplierName: supplier.name,
+        topBrand: supplier.internal.topBrands?.[0]?.name || "N/A",
+        sales: cat.supplierSales,
+        cogs: cat.supplierSales - catMargin,
+        margin: catMargin,
+        yoySales: supplier.internal.salesYoy,
+        yoyMargin: supplier.internal.marginYoy,
+        categorySales: cat.categorySales,
+        categoryPct: cat.categoryPct
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.sales - a.sales);
+
+  if (!entries.length) return [];
+
+  const statedCategorySales = Math.max(...entries.map((e) => e.categorySales || 0), 0);
+  const summedSales = entries.reduce((acc, e) => acc + e.sales, 0);
+  const categorySalesTotal = Math.max(statedCategorySales, summedSales);
+  entries.forEach((entry, idx) => {
+    entry.rank = idx + 1;
+    entry.penetration = categorySalesTotal > 0 ? (entry.sales / categorySalesTotal) * 100 : entry.categoryPct || 0;
+  });
+
+  const top5 = entries.slice(0, 5);
+  const focus = entries.find((e) => e.supplierId === focusSupplierId);
+  const focusInTop5 = top5.some((e) => e.supplierId === focusSupplierId);
+  const remainingPool = entries.filter((e) => !top5.some((x) => x.supplierId === e.supplierId) && e.supplierId !== focusSupplierId);
+
+  const rows = top5.map((e) => ({ type: "supplier", ...e }));
+
+  if (focus && !focusInTop5) {
+    rows.push({ type: "focus", ...focus });
+  }
+
+  const otherSales = remainingPool.reduce((acc, e) => acc + e.sales, 0);
+  const otherCogs = remainingPool.reduce((acc, e) => acc + e.cogs, 0);
+  const otherMargin = remainingPool.reduce((acc, e) => acc + e.margin, 0);
+  const otherPen = categorySalesTotal > 0 ? (otherSales / categorySalesTotal) * 100 : 0;
+  const otherYoySales =
+    otherSales > 0 ? remainingPool.reduce((acc, e) => acc + e.yoySales * e.sales, 0) / otherSales : 0;
+  const otherYoyMargin =
+    otherMargin > 0 ? remainingPool.reduce((acc, e) => acc + e.yoyMargin * e.margin, 0) / otherMargin : 0;
+
+  rows.push({
+    type: "other",
+    rankLabel: "Other",
+    supplierName: "Other Suppliers",
+    topBrand: "-",
+    penetration: otherPen,
+    cogs: otherCogs,
+    sales: otherSales,
+    yoySales: otherYoySales,
+    margin: otherMargin,
+    yoyMargin: otherYoyMargin
+  });
+
+  const totalSales = entries.reduce((acc, e) => acc + e.sales, 0);
+  const totalCogs = entries.reduce((acc, e) => acc + e.cogs, 0);
+  const totalMargin = entries.reduce((acc, e) => acc + e.margin, 0);
+  const totalYoySales = totalSales > 0 ? entries.reduce((acc, e) => acc + e.yoySales * e.sales, 0) / totalSales : 0;
+  const totalYoyMargin = totalMargin > 0 ? entries.reduce((acc, e) => acc + e.yoyMargin * e.margin, 0) / totalMargin : 0;
+
+  rows.push({
+    type: "total",
+    rankLabel: "Total",
+    supplierName: "Total Category",
+    topBrand: "-",
+    penetration: 100,
+    cogs: totalCogs,
+    sales: totalSales,
+    yoySales: totalYoySales,
+    margin: totalMargin,
+    yoyMargin: totalYoyMargin
+  });
+
+  return rows;
+}
+
+function renderCategoryBreakoutDetailTable(rows) {
+  if (!categoryBreakoutDetailTableBody) return;
+  categoryBreakoutDetailTableBody.innerHTML = rows
+    .map((r) => {
+      const rowClass =
+        r.type === "total" ? "total-row" : r.type === "focus" ? "current-supplier-row" : r.type === "other" ? "other-row" : "";
+      const rankCell = r.rankLabel || r.rank || "-";
+      const supplierName = r.type === "focus" ? `${r.supplierName} (Current Supplier)` : r.supplierName;
+      return `
+        <tr class="${rowClass}">
+          <td>${rankCell}</td>
+          <td>${supplierName}</td>
+          <td>${r.topBrand || "-"}</td>
+          <td>${(r.penetration || 0).toFixed(1)}%</td>
+          <td>${moneyPlain(r.cogs || 0)}</td>
+          <td>${moneyPlain(r.sales || 0)}</td>
+          <td class="${yoyClass(r.yoySales || 0)}">${pct(r.yoySales || 0)}</td>
+          <td>${moneyPlain(r.margin || 0)}</td>
+          <td class="${yoyClass(r.yoyMargin || 0)}">${pct(r.yoyMargin || 0)}</td>
+        </tr>
+      `;
+    })
+    .join("");
+}
+
+function closeCategoryModal() {
+  if (!categoryModalOverlay || categoryModalOverlay.classList.contains("hidden")) return;
+  categoryModalOverlay.classList.remove("modal-visible");
+  categoryModalOverlay.classList.add("modal-closing");
+  if (categoryModalCloseTimer) clearTimeout(categoryModalCloseTimer);
+  categoryModalCloseTimer = setTimeout(() => {
+    categoryModalOverlay.classList.add("hidden");
+    categoryModalOverlay.classList.remove("modal-closing");
+    categoryModalOverlay.setAttribute("aria-hidden", "true");
+    categoryModalCloseTimer = null;
+  }, 220);
+}
+
+function openCategoryModal(categoryName, originRow) {
+  if (!categoryModalOverlay || !currentProfileSupplier) return;
+  if (categoryModalCloseTimer) {
+    clearTimeout(categoryModalCloseTimer);
+    categoryModalCloseTimer = null;
+  }
+
+  const rows = buildCategoryRankingRows(categoryName, currentProfileSupplier.id);
+  renderCategoryBreakoutDetailTable(rows);
+
+  if (categoryModalTitle) categoryModalTitle.textContent = `${categoryName} - Supplier Ranking`;
+  if (categoryModalSubtitle) {
+    categoryModalSubtitle.textContent = `${currentProfileSupplier.name} context • Top 5 plus current supplier (if outside top 5), Other, and Total`;
+  }
+
+  if (originRow) {
+    originRow.classList.add("metric-pop-origin");
+    setTimeout(() => originRow.classList.remove("metric-pop-origin"), 260);
+  }
+
+  categoryModalOverlay.classList.remove("hidden");
+  categoryModalOverlay.classList.remove("modal-closing");
+  categoryModalOverlay.classList.remove("modal-visible");
+  categoryModalOverlay.setAttribute("aria-hidden", "false");
+
+  requestAnimationFrame(() => {
+    if (categoryModal && originRow) {
+      const rowRect = originRow.getBoundingClientRect();
+      const modalRect = categoryModal.getBoundingClientRect();
+      const xPct = ((rowRect.left + rowRect.width / 2 - modalRect.left) / modalRect.width) * 100;
+      const yPct = ((rowRect.top + rowRect.height / 2 - modalRect.top) / modalRect.height) * 100;
+      const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+      categoryModal.style.transformOrigin = `${clamp(xPct, 8, 92).toFixed(1)}% ${clamp(yPct, 8, 92).toFixed(1)}%`;
+    }
+    categoryModalOverlay.classList.add("modal-visible");
+  });
+}
+
 function renderBullets(elementId, items) {
   document.getElementById(elementId).innerHTML = items.map((item) => `<li>${item}</li>`).join("");
 }
@@ -3064,7 +3235,7 @@ function renderCategoryTable(rows) {
   const tbody = document.querySelector("#category-table tbody");
   tbody.innerHTML = rows
     .map(
-      (row) => `<tr>
+      (row) => `<tr class="category-row-clickable" data-category-name="${row.category}">
           <td>${row.category}</td>
           <td>${moneyPlain(row.supplierSales)}</td>
           <td>${row.supplierPct.toFixed(1)}%</td>
@@ -3073,6 +3244,14 @@ function renderCategoryTable(rows) {
         </tr>`
     )
     .join("");
+
+  tbody.querySelectorAll("tr.category-row-clickable").forEach((tr) => {
+    tr.addEventListener("click", () => {
+      const categoryName = tr.getAttribute("data-category-name");
+      if (!categoryName) return;
+      openCategoryModal(categoryName, tr);
+    });
+  });
 }
 
 function renderInflight(rows) {
@@ -3185,6 +3364,7 @@ document.querySelectorAll("#supplier-table th").forEach((th) => {
 backBtn.addEventListener("click", () => {
   closeMetricModal();
   closeCostRowModal();
+  closeCategoryModal();
   currentProfileSupplier = null;
   profileView.classList.remove("active");
   dashboardView.classList.add("active");
@@ -3364,10 +3544,21 @@ if (costRowModalOverlay) {
   });
 }
 
+if (categoryModalCloseBtn) {
+  categoryModalCloseBtn.addEventListener("click", closeCategoryModal);
+}
+
+if (categoryModalOverlay) {
+  categoryModalOverlay.addEventListener("click", (event) => {
+    if (event.target === categoryModalOverlay) closeCategoryModal();
+  });
+}
+
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     if (metricModalState) closeMetricModal();
     if (costRowModalOverlay && !costRowModalOverlay.classList.contains("hidden")) closeCostRowModal();
+    if (categoryModalOverlay && !categoryModalOverlay.classList.contains("hidden")) closeCategoryModal();
   }
 });
 
