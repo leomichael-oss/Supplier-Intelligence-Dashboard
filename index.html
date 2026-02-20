@@ -358,6 +358,36 @@
       </div>
     </div>
 
+    <div id="cost-row-modal-overlay" class="metric-modal-overlay hidden" aria-hidden="true">
+      <div id="cost-row-modal" class="metric-modal cost-row-modal" role="dialog" aria-modal="true" aria-labelledby="cost-row-modal-title">
+        <div class="metric-modal-head">
+          <h3 id="cost-row-modal-title">Cost Change Detail</h3>
+          <button id="cost-row-modal-close" class="ghost-btn" type="button">Close</button>
+        </div>
+        <div class="metric-modal-subhead">
+          <p id="cost-row-modal-subtitle" class="muted-text"></p>
+        </div>
+        <div class="table-wrap compact-table-wrap">
+          <table id="cost-row-detail-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Product Line</th>
+                <th>Rationale</th>
+                <th>Proposed $</th>
+                <th>Justified $</th>
+                <th>Accepted $</th>
+                <th>Proposed %</th>
+                <th>Justified %</th>
+                <th>Accepted %</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <script src="app.js"></script>
   </body>
 </html>

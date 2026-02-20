@@ -1625,6 +1625,12 @@ const metricChartWrap = document.getElementById("metric-chart-wrap");
 const metricModalCloseBtn = document.getElementById("metric-modal-close");
 const metricTf1yBtn = document.getElementById("metric-tf-1y");
 const metricTf5yBtn = document.getElementById("metric-tf-5y");
+const costRowModalOverlay = document.getElementById("cost-row-modal-overlay");
+const costRowModal = document.getElementById("cost-row-modal");
+const costRowModalTitle = document.getElementById("cost-row-modal-title");
+const costRowModalSubtitle = document.getElementById("cost-row-modal-subtitle");
+const costRowModalCloseBtn = document.getElementById("cost-row-modal-close");
+const costRowDetailTableBody = document.querySelector("#cost-row-detail-table tbody");
 
 let sortState = { key: "sales", direction: "desc" };
 let dashboardMode = "summary";
@@ -1635,6 +1641,7 @@ let currentProfileSupplier = null;
 let currentNegotiation = null;
 let metricModalState = null;
 let metricModalCloseTimer = null;
+let costRowModalCloseTimer = null;
 const THEME_STORAGE_KEY = "supplier-intel-theme";
 const NEGOTIATION_STORAGE_KEY = "supplier-negotiations-v1";
 
@@ -2373,6 +2380,134 @@ function openMetricModal(metricKey, metricLabel, originTile) {
   });
 }
 
+function buildCostRowDetails(supplier, row, rowType) {
+  const categories = [...(supplier.internal.categories || [])]
+    .sort((a, b) => b.supplierPct - a.supplierPct)
+    .slice(0, 5);
+
+  const lead = row.sourcingLead || "Sourcing Team";
+  const topCategory = row.topImpactedCategory || categories[0]?.category || "Core Category";
+  const proposed = Number(row.proposed || 0);
+  const justified = Number(row.justified || proposed * 0.72);
+  const accepted =
+    rowType === "history" ? Number(row.accepted || justified * 0.94) : Number(Math.max(0, justified * 0.92));
+  const proposedPct = Number(row.proposedPct || 0);
+  const justifiedPct = Number(row.justifiedPct || 0);
+  const acceptedPct = rowType === "history" ? Number(row.acceptedPct || justifiedPct * 0.92) : Number(justifiedPct * 0.9);
+
+  const defaultRationales = [
+    "Commodity inflation and indexed ingredient pressure.",
+    "Packaging and logistics cost normalization.",
+    "Labor escalation and plant throughput constraints.",
+    "Mix shift into premium formats and higher spec.",
+    "FX and import-cost pass-through on key inputs."
+  ];
+
+  const weightSet = categories.length
+    ? categories.map((c) => Math.max(0.08, c.supplierPct / 100))
+    : [0.34, 0.23, 0.18, 0.15, 0.1];
+  const weightSum = weightSet.reduce((a, b) => a + b, 0) || 1;
+  const normalized = weightSet.map((w) => w / weightSum);
+
+  return normalized.map((weight, idx) => {
+    const category = categories[idx]?.category || (idx === 0 ? topCategory : `Category ${idx + 1}`);
+    const productLine = categories[idx]
+      ? `${categories[idx].category} Core`
+      : idx === 0
+      ? `${topCategory} Core`
+      : `Portfolio Line ${idx + 1}`;
+    return {
+      category,
+      productLine,
+      rationale: defaultRationales[idx % defaultRationales.length],
+      proposed: proposed * weight,
+      justified: justified * weight,
+      accepted: accepted * weight,
+      proposedPct: proposedPct * weight,
+      justifiedPct: justifiedPct * weight,
+      acceptedPct: acceptedPct * weight,
+      lead
+    };
+  });
+}
+
+function renderCostRowDetailTable(details) {
+  if (!costRowDetailTableBody) return;
+  costRowDetailTableBody.innerHTML = details
+    .map(
+      (d) => `
+    <tr>
+      <td>${d.category}</td>
+      <td>${d.productLine}</td>
+      <td>${d.rationale}</td>
+      <td>${moneyPlain(d.proposed)}</td>
+      <td>${moneyPlain(d.justified)}</td>
+      <td>${moneyPlain(d.accepted)}</td>
+      <td class="${yoyClass(d.proposedPct)}">${pct(d.proposedPct)}</td>
+      <td class="${yoyClass(d.justifiedPct)}">${pct(d.justifiedPct)}</td>
+      <td class="${yoyClass(d.acceptedPct)}">${pct(d.acceptedPct)}</td>
+    </tr>
+  `
+    )
+    .join("");
+}
+
+function closeCostRowModal() {
+  if (!costRowModalOverlay || costRowModalOverlay.classList.contains("hidden")) return;
+  costRowModalOverlay.classList.remove("modal-visible");
+  costRowModalOverlay.classList.add("modal-closing");
+  if (costRowModalCloseTimer) clearTimeout(costRowModalCloseTimer);
+  costRowModalCloseTimer = setTimeout(() => {
+    costRowModalOverlay.classList.add("hidden");
+    costRowModalOverlay.classList.remove("modal-closing");
+    costRowModalOverlay.setAttribute("aria-hidden", "true");
+    costRowModalCloseTimer = null;
+  }, 220);
+}
+
+function openCostRowModal(supplier, row, rowType, originRow) {
+  if (!costRowModalOverlay || !supplier) return;
+  if (costRowModalCloseTimer) {
+    clearTimeout(costRowModalCloseTimer);
+    costRowModalCloseTimer = null;
+  }
+
+  const isInflight = rowType === "inflight";
+  if (costRowModalTitle) {
+    costRowModalTitle.textContent = isInflight ? "Inflight Cost Proposal Detail" : "Historical Cost Change Detail";
+  }
+  if (costRowModalSubtitle) {
+    const who = row.sourcingLead ? ` • ${row.sourcingLead}` : "";
+    const cat = row.topImpactedCategory ? ` • ${row.topImpactedCategory}` : "";
+    costRowModalSubtitle.textContent = `${supplier.name} • ${row.date || "No date"}${cat}${who}`;
+  }
+
+  const details = buildCostRowDetails(supplier, row, rowType);
+  renderCostRowDetailTable(details);
+
+  if (originRow) {
+    originRow.classList.add("metric-pop-origin");
+    setTimeout(() => originRow.classList.remove("metric-pop-origin"), 260);
+  }
+
+  costRowModalOverlay.classList.remove("hidden");
+  costRowModalOverlay.classList.remove("modal-closing");
+  costRowModalOverlay.classList.remove("modal-visible");
+  costRowModalOverlay.setAttribute("aria-hidden", "false");
+
+  requestAnimationFrame(() => {
+    if (costRowModal && originRow) {
+      const rowRect = originRow.getBoundingClientRect();
+      const modalRect = costRowModal.getBoundingClientRect();
+      const xPct = ((rowRect.left + rowRect.width / 2 - modalRect.left) / modalRect.width) * 100;
+      const yPct = ((rowRect.top + rowRect.height / 2 - modalRect.top) / modalRect.height) * 100;
+      const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+      costRowModal.style.transformOrigin = `${clamp(xPct, 8, 92).toFixed(1)}% ${clamp(yPct, 8, 92).toFixed(1)}%`;
+    }
+    costRowModalOverlay.classList.add("modal-visible");
+  });
+}
+
 function renderBullets(elementId, items) {
   document.getElementById(elementId).innerHTML = items.map((item) => `<li>${item}</li>`).join("");
 }
@@ -2902,7 +3037,7 @@ function renderInflight(rows) {
   const tbody = document.querySelector("#inflight-table tbody");
   tbody.innerHTML = rows
     .map(
-      (r) => `<tr>
+      (r, idx) => `<tr class="cost-row-clickable" data-row-type="inflight" data-row-idx="${idx}">
         <td>${r.date}</td>
         <td>${r.topImpactedCategory}</td>
         <td>${r.sourcingLead}</td>
@@ -2913,6 +3048,16 @@ function renderInflight(rows) {
       </tr>`
     )
     .join("");
+
+  tbody.querySelectorAll("tr.cost-row-clickable").forEach((tr) => {
+    tr.addEventListener("click", () => {
+      if (!currentProfileSupplier) return;
+      const idx = Number(tr.getAttribute("data-row-idx"));
+      const selected = rows[idx];
+      if (!selected) return;
+      openCostRowModal(currentProfileSupplier, selected, "inflight", tr);
+    });
+  });
 }
 
 function renderCommodityTable(rows, supplierSales) {
@@ -2942,9 +3087,9 @@ function renderHistory(rows) {
   const totalRate = sumAccepted ? (sumJustified / sumAccepted) * 100 : 0;
 
   const bodyRows = rows
-    .map((r) => {
+    .map((r, idx) => {
       const rate = r.accepted ? (r.justified / r.accepted) * 100 : 0;
-      return `<tr>
+      return `<tr class="cost-row-clickable" data-row-type="history" data-row-idx="${idx}">
           <td>${r.date}</td>
           <td>${moneyPlain(r.proposed)}</td>
           <td>${moneyPlain(r.justified)}</td>
@@ -2969,6 +3114,16 @@ function renderHistory(rows) {
     </tr>`;
 
   tbody.innerHTML = bodyRows + totalRow;
+
+  tbody.querySelectorAll("tr.cost-row-clickable").forEach((tr) => {
+    tr.addEventListener("click", () => {
+      if (!currentProfileSupplier) return;
+      const idx = Number(tr.getAttribute("data-row-idx"));
+      const selected = rows[idx];
+      if (!selected) return;
+      openCostRowModal(currentProfileSupplier, selected, "history", tr);
+    });
+  });
 }
 
 document.querySelectorAll("#supplier-table th").forEach((th) => {
@@ -2987,6 +3142,7 @@ document.querySelectorAll("#supplier-table th").forEach((th) => {
 
 backBtn.addEventListener("click", () => {
   closeMetricModal();
+  closeCostRowModal();
   currentProfileSupplier = null;
   profileView.classList.remove("active");
   dashboardView.classList.add("active");
@@ -3156,8 +3312,21 @@ if (metricTf5yBtn) {
   metricTf5yBtn.addEventListener("click", () => setMetricTimeframe("5y"));
 }
 
+if (costRowModalCloseBtn) {
+  costRowModalCloseBtn.addEventListener("click", closeCostRowModal);
+}
+
+if (costRowModalOverlay) {
+  costRowModalOverlay.addEventListener("click", (event) => {
+    if (event.target === costRowModalOverlay) closeCostRowModal();
+  });
+}
+
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && metricModalState) closeMetricModal();
+  if (event.key === "Escape") {
+    if (metricModalState) closeMetricModal();
+    if (costRowModalOverlay && !costRowModalOverlay.classList.contains("hidden")) closeCostRowModal();
+  }
 });
 
 initThemeToggle();
