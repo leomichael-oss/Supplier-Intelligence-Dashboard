@@ -2667,14 +2667,14 @@ function openProfile(id) {
     )
     .join("");
 
-  const recentNews = buildSupplierMentions(supplier, 183, 10);
+  const recentNews = buildSupplierMentions(supplier, 183, 20);
   if (recentNews.length === 0) {
     document.getElementById("news-list").innerHTML = `<li>No news mentions in the last 6 months for this supplier.</li>`;
   } else {
   document.getElementById("news-list").innerHTML = recentNews
     .map(
       (item) =>
-        `<li><a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.title}</a><span class="news-date">(${item.date})</span>${item.type === "esg" ? `<span class="news-date"> ESG</span>` : ""}</li>`
+        `<li><a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.title}</a>${item.summary ? `<div class="news-inline-summary">${item.summary}</div>` : ""}<span class="news-date">(${item.date})</span>${item.type === "esg" ? `<span class="news-date"> ESG</span>` : ""}</li>`
     )
     .join("");
   }
