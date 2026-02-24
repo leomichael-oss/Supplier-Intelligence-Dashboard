@@ -2557,6 +2557,45 @@ function openCostRowModal(supplier, row, rowType, originRow) {
   });
 }
 
+const CATEGORY_COMPETITOR_LIBRARY = {
+  "Cereal": [
+    { supplierName: "Post Consumer Brands", topBrand: "Honey Bunches of Oats", penetration: 7.2, yoySales: 0.8, yoyMargin: 0.4, marginRate: 0.24 },
+    { supplierName: "WK Kellogg Co", topBrand: "Froot Loops", penetration: 6.5, yoySales: -0.6, yoyMargin: -0.2, marginRate: 0.22 },
+    { supplierName: "PepsiCo (Quaker)", topBrand: "Quaker Oatmeal Squares", penetration: 5.8, yoySales: 1.1, yoyMargin: 0.3, marginRate: 0.23 },
+    { supplierName: "Nature's Path", topBrand: "Heritage Flakes", penetration: 2.6, yoySales: 1.7, yoyMargin: 0.5, marginRate: 0.21 }
+  ],
+  "Snacks": [
+    { supplierName: "Mondelez", topBrand: "Oreo", penetration: 9.4, yoySales: 2.1, yoyMargin: 0.7, marginRate: 0.29 },
+    { supplierName: "Campbell's (Snyder's-Lance)", topBrand: "Goldfish", penetration: 6.8, yoySales: 1.4, yoyMargin: 0.4, marginRate: 0.24 },
+    { supplierName: "Utz Brands", topBrand: "Utz Potato Chips", penetration: 4.6, yoySales: 2.0, yoyMargin: 0.6, marginRate: 0.23 },
+    { supplierName: "Conagra", topBrand: "Slim Jim", penetration: 3.2, yoySales: 0.9, yoyMargin: 0.3, marginRate: 0.22 }
+  ],
+  "Beverages": [
+    { supplierName: "Keurig Dr Pepper", topBrand: "Dr Pepper", penetration: 8.6, yoySales: 2.4, yoyMargin: 0.8, marginRate: 0.31 },
+    { supplierName: "Monster Beverage", topBrand: "Monster Energy", penetration: 5.7, yoySales: 4.1, yoyMargin: 1.2, marginRate: 0.34 },
+    { supplierName: "National Beverage", topBrand: "LaCroix", penetration: 3.6, yoySales: 1.2, yoyMargin: 0.4, marginRate: 0.28 },
+    { supplierName: "Red Bull North America", topBrand: "Red Bull", penetration: 4.8, yoySales: 5.0, yoyMargin: 1.4, marginRate: 0.36 }
+  ],
+  "Coffee": [
+    { supplierName: "JDE Peet's", topBrand: "Peet's", penetration: 7.1, yoySales: 2.0, yoyMargin: 0.5, marginRate: 0.27 },
+    { supplierName: "Keurig Dr Pepper", topBrand: "Keurig", penetration: 6.3, yoySales: 1.8, yoyMargin: 0.5, marginRate: 0.28 },
+    { supplierName: "Smucker", topBrand: "Folgers", penetration: 8.4, yoySales: 1.1, yoyMargin: 0.3, marginRate: 0.25 },
+    { supplierName: "Lavazza", topBrand: "Lavazza", penetration: 2.9, yoySales: 2.7, yoyMargin: 0.6, marginRate: 0.24 }
+  ],
+  "Confectionery": [
+    { supplierName: "Mars Wrigley", topBrand: "M&M's", penetration: 10.3, yoySales: 2.5, yoyMargin: 0.8, marginRate: 0.31 },
+    { supplierName: "Ferrero", topBrand: "Kinder", penetration: 5.9, yoySales: 3.4, yoyMargin: 0.9, marginRate: 0.30 },
+    { supplierName: "Mondelez", topBrand: "Cadbury", penetration: 7.6, yoySales: 2.1, yoyMargin: 0.6, marginRate: 0.29 },
+    { supplierName: "Lindt & Sprungli", topBrand: "Lindt Lindor", penetration: 3.2, yoySales: 2.8, yoyMargin: 0.7, marginRate: 0.33 }
+  ],
+  "Cheese": [
+    { supplierName: "Lactalis", topBrand: "Cracker Barrel", penetration: 9.1, yoySales: 1.9, yoyMargin: 0.5, marginRate: 0.2 },
+    { supplierName: "Bel Group", topBrand: "Babybel", penetration: 4.2, yoySales: 1.3, yoyMargin: 0.3, marginRate: 0.19 },
+    { supplierName: "Sargento", topBrand: "Sargento", penetration: 6.7, yoySales: 2.0, yoyMargin: 0.6, marginRate: 0.22 },
+    { supplierName: "Schreiber Foods", topBrand: "Private Label Cheese", penetration: 5.1, yoySales: 1.0, yoyMargin: 0.2, marginRate: 0.17 }
+  ]
+};
+
 function buildCategoryRankingRows(categoryName, focusSupplierId) {
   const entries = suppliers
     .map((supplier) => {
@@ -2585,9 +2624,37 @@ function buildCategoryRankingRows(categoryName, focusSupplierId) {
   const statedCategorySales = Math.max(...entries.map((e) => e.categorySales || 0), 0);
   const summedSales = entries.reduce((acc, e) => acc + e.sales, 0);
   const categorySalesTotal = Math.max(statedCategorySales, summedSales);
+  const existingNames = new Set(entries.map((e) => e.supplierName.toLowerCase()));
+  const syntheticCandidates = (CATEGORY_COMPETITOR_LIBRARY[categoryName] || [])
+    .filter((c) => !existingNames.has(c.supplierName.toLowerCase()))
+    .map((c, idx) => {
+      const sales = (categorySalesTotal * c.penetration) / 100;
+      const margin = sales * c.marginRate;
+      return {
+        supplierId: `synthetic-${categoryName}-${idx}`,
+        supplierName: c.supplierName,
+        topBrand: c.topBrand,
+        sales,
+        cogs: sales - margin,
+        margin,
+        yoySales: c.yoySales,
+        yoyMargin: c.yoyMargin,
+        categorySales: categorySalesTotal,
+        categoryPct: c.penetration,
+        penetration: c.penetration,
+        synthetic: true
+      };
+    });
+  entries.push(...syntheticCandidates);
   entries.forEach((entry, idx) => {
     entry.rank = idx + 1;
-    entry.penetration = categorySalesTotal > 0 ? (entry.sales / categorySalesTotal) * 100 : entry.categoryPct || 0;
+    if (entry.penetration === undefined) {
+      entry.penetration = categorySalesTotal > 0 ? (entry.sales / categorySalesTotal) * 100 : entry.categoryPct || 0;
+    }
+  });
+  entries.sort((a, b) => b.sales - a.sales);
+  entries.forEach((entry, idx) => {
+    entry.rank = idx + 1;
   });
 
   const top5 = entries.slice(0, 5);
@@ -2601,14 +2668,19 @@ function buildCategoryRankingRows(categoryName, focusSupplierId) {
     rows.push({ type: "focus", ...focus });
   }
 
-  const otherSales = remainingPool.reduce((acc, e) => acc + e.sales, 0);
-  const otherCogs = remainingPool.reduce((acc, e) => acc + e.cogs, 0);
-  const otherMargin = remainingPool.reduce((acc, e) => acc + e.margin, 0);
-  const otherPen = categorySalesTotal > 0 ? (otherSales / categorySalesTotal) * 100 : 0;
+  const displayedNonOther = rows.reduce((acc, e) => acc + (e.penetration || 0), 0);
+  const otherPen = Math.max(0, 100 - displayedNonOther);
+  const pooledOtherSales = remainingPool.reduce((acc, e) => acc + e.sales, 0);
+  const pooledOtherCogs = remainingPool.reduce((acc, e) => acc + e.cogs, 0);
+  const pooledOtherMargin = remainingPool.reduce((acc, e) => acc + e.margin, 0);
+  const otherSales = (categorySalesTotal * otherPen) / 100;
+  const weightedMarginRate = pooledOtherSales > 0 ? pooledOtherMargin / pooledOtherSales : 0.24;
+  const otherMargin = otherSales * weightedMarginRate;
+  const otherCogs = otherSales - otherMargin;
   const otherYoySales =
-    otherSales > 0 ? remainingPool.reduce((acc, e) => acc + e.yoySales * e.sales, 0) / otherSales : 0;
+    remainingPool.length && pooledOtherSales > 0 ? remainingPool.reduce((acc, e) => acc + e.yoySales * e.sales, 0) / pooledOtherSales : 0;
   const otherYoyMargin =
-    otherMargin > 0 ? remainingPool.reduce((acc, e) => acc + e.yoyMargin * e.margin, 0) / otherMargin : 0;
+    remainingPool.length && pooledOtherMargin > 0 ? remainingPool.reduce((acc, e) => acc + e.yoyMargin * e.margin, 0) / pooledOtherMargin : 0;
 
   rows.push({
     type: "other",
@@ -2623,11 +2695,22 @@ function buildCategoryRankingRows(categoryName, focusSupplierId) {
     yoyMargin: otherYoyMargin
   });
 
-  const totalSales = entries.reduce((acc, e) => acc + e.sales, 0);
-  const totalCogs = entries.reduce((acc, e) => acc + e.cogs, 0);
-  const totalMargin = entries.reduce((acc, e) => acc + e.margin, 0);
-  const totalYoySales = totalSales > 0 ? entries.reduce((acc, e) => acc + e.yoySales * e.sales, 0) / totalSales : 0;
-  const totalYoyMargin = totalMargin > 0 ? entries.reduce((acc, e) => acc + e.yoyMargin * e.margin, 0) / totalMargin : 0;
+  const totalSales = categorySalesTotal;
+  const totalMargin = rows.reduce((acc, e) => acc + (e.type === "other" ? e.margin : (e.margin || 0)), 0);
+  const totalCogs = totalSales - totalMargin;
+  const rankedRowsForWeight = rows.filter((e) => e.type !== "other");
+  const totalYoySales = totalSales > 0
+    ? (
+        rankedRowsForWeight.reduce((acc, e) => acc + (e.yoySales || 0) * (e.sales || 0), 0) +
+        otherYoySales * otherSales
+      ) / totalSales
+    : 0;
+  const totalYoyMargin = totalMargin > 0
+    ? (
+        rankedRowsForWeight.reduce((acc, e) => acc + (e.yoyMargin || 0) * (e.margin || 0), 0) +
+        otherYoyMargin * otherMargin
+      ) / totalMargin
+    : 0;
 
   rows.push({
     type: "total",
