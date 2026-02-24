@@ -3235,13 +3235,17 @@ function renderCategoryTable(rows) {
   const tbody = document.querySelector("#category-table tbody");
   tbody.innerHTML = rows
     .map(
-      (row) => `<tr class="category-row-clickable" data-category-name="${row.category}">
+      (row) => {
+        const nielsenSharePct = row.nielsenSharePct ?? row.categoryPct;
+        return `<tr class="category-row-clickable" data-category-name="${row.category}">
           <td>${row.category}</td>
           <td>${moneyPlain(row.supplierSales)}</td>
           <td>${row.supplierPct.toFixed(1)}%</td>
           <td>${moneyPlain(row.categorySales)}</td>
           <td>${row.categoryPct.toFixed(1)}%</td>
+          <td>${nielsenSharePct.toFixed(1)}%</td>
         </tr>`
+      }
     )
     .join("");
 
