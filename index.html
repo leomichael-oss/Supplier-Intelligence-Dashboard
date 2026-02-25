@@ -26,7 +26,7 @@
           </p>
         </header>
 
-        <section id="dashboard-ai-bar" class="profile-ai-bar panel compact-dashboard-ai">
+        <section id="dashboard-ai-bar" class="profile-ai-bar panel compact-ai-bar">
           <form id="dashboard-ai-form" class="profile-ai-form">
             <input id="dashboard-ai-input" class="profile-ai-input" type="text" placeholder="e.g., Which suppliers show the highest near-term margin risk?" aria-label="Ask AI on dashboard" required />
             <button id="dashboard-ai-submit" class="ghost-btn" type="submit">Ask AI</button>
@@ -81,11 +81,7 @@
           </div>
         </div>
 
-        <section id="profile-quick-ai-bar" class="profile-ai-bar panel">
-          <div class="profile-ai-header">
-            <h3>Ask AI</h3>
-            <p>Ask a supplier-specific question from Internal or External view.</p>
-          </div>
+        <section id="profile-quick-ai-bar" class="profile-ai-bar panel compact-ai-bar">
           <form id="quick-ai-form" class="profile-ai-form">
             <input
               id="quick-ai-input"
@@ -97,9 +93,7 @@
             />
             <button id="quick-ai-submit" class="ghost-btn" type="submit">Ask AI</button>
           </form>
-          <div id="quick-ai-answer" class="profile-ai-answer muted-text">
-            Ask a question for a fast supplier-specific answer.
-          </div>
+          <div id="quick-ai-answer" class="profile-ai-answer muted-text ai-answer-collapsed" aria-live="polite"></div>
         </section>
 
         <section class="profile-grid">

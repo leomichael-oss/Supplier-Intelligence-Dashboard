@@ -391,19 +391,18 @@ tr.category-row-clickable:hover {
   pointer-events: none;
 }
 
-#dashboard-ai-bar {
-  position: relative;
-  top: auto;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  min-height: 78px;
-}
-
+#dashboard-ai-bar,
 #profile-quick-ai-bar {
   position: relative;
   top: auto;
   z-index: 5;
+}
+
+.compact-ai-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 78px;
 }
 
 .profile-ai-header {
@@ -432,7 +431,7 @@ tr.category-row-clickable:hover {
   gap: 0.45rem;
 }
 
-.compact-dashboard-ai .profile-ai-form {
+.compact-ai-bar .profile-ai-form {
   margin-top: 0;
   width: 100%;
   align-items: center;

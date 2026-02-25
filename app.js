@@ -3573,6 +3573,8 @@ if (quickAiForm && quickAiInput && quickAiAnswer) {
     const question = quickAiInput.value.trim();
     if (!question || !currentProfileSupplier) return;
 
+    quickAiAnswer.classList.remove("ai-answer-collapsed");
+    quickAiAnswer.classList.add("ai-answer-visible");
     quickAiAnswer.textContent = "Analyzing supplier context...";
     if (quickAiSubmit) {
       quickAiSubmit.disabled = true;
