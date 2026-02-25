@@ -429,6 +429,10 @@ tr.category-row-clickable:hover {
   gap: 0.55rem;
 }
 
+.compact-dashboard-ai .profile-ai-form {
+  margin-top: 0;
+}
+
 .profile-ai-form-stacked {
   grid-template-columns: 1fr;
   gap: 0.7rem;
@@ -449,6 +453,25 @@ tr.category-row-clickable:hover {
   background: #fffdf8;
   color: #4f4538;
   font: inherit;
+}
+
+.ai-answer-collapsed {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-width: 0;
+  transform: translateY(-6px);
+  transition: max-height 180ms ease, opacity 140ms ease, transform 180ms ease, margin-top 180ms ease, padding 180ms ease, border-width 180ms ease;
+}
+
+.ai-answer-visible {
+  max-height: 280px;
+  opacity: 1;
+  transform: translateY(0);
+  margin-top: 0.8rem;
 }
 
 .profile-ai-textarea {

@@ -3617,6 +3617,8 @@ if (dashboardAiForm && dashboardAiInput && dashboardAiAnswer) {
     event.preventDefault();
     const question = dashboardAiInput.value.trim();
     if (!question) return;
+    dashboardAiAnswer.classList.remove("ai-answer-collapsed");
+    dashboardAiAnswer.classList.add("ai-answer-visible");
     dashboardAiAnswer.textContent = "Analyzing dashboard context...";
     if (dashboardAiSubmit) {
       dashboardAiSubmit.disabled = true;

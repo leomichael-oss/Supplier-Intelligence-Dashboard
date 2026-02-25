@@ -26,16 +26,12 @@
           </p>
         </header>
 
-        <section id="dashboard-ai-bar" class="profile-ai-bar panel">
-          <div class="profile-ai-header">
-            <h3>Ask AI</h3>
-            <p>Ask portfolio-level sourcing and negotiation questions across all suppliers.</p>
-          </div>
+        <section id="dashboard-ai-bar" class="profile-ai-bar panel compact-dashboard-ai">
           <form id="dashboard-ai-form" class="profile-ai-form">
             <input id="dashboard-ai-input" class="profile-ai-input" type="text" placeholder="e.g., Which suppliers show the highest near-term margin risk?" aria-label="Ask AI on dashboard" required />
             <button id="dashboard-ai-submit" class="ghost-btn" type="submit">Ask AI</button>
           </form>
-          <div id="dashboard-ai-answer" class="profile-ai-answer muted-text">Ask a question to get cross-supplier strategic guidance.</div>
+          <div id="dashboard-ai-answer" class="profile-ai-answer muted-text ai-answer-collapsed" aria-live="polite"></div>
         </section>
 
         <section class="panel">
