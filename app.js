@@ -672,19 +672,19 @@ const suppliers = [
       highlights: ["Core categories remain stable.", "Productivity offsets inflation.", "Cash returns to shareholders remain strong."],
       news: buildNews("Procter & Gamble", [
         {
-          title: "P&G Announces Fiscal Year 2026 Second Quarter Results",
+          title: "Procter & Gamble misses revenue estimates due to slower US growth (Reuters)",
           date: "2026-01-22",
-          url: "https://us.pg.com/newsroom/news-releases/PG-Announces-Fiscal-Year-2026-Second-Quarter-Results"
+          url: "https://www.investing.com/news/stock-market-news/procter--gamble-revenue-is-a-touch-shy-of-estimates-as-adjusted-profit-tops-targets-4459941"
         },
         {
-          title: "P&G Announces Fiscal Year 2026 First Quarter Results",
-          date: "2025-10-24",
-          url: "https://us.pg.com/newsroom/news-releases/PG-Announces-Fiscal-Year-2026-First-Quarter-Results"
+          title: "Procter & Gamble to cut 7,000 jobs as part of broader restructuring",
+          date: "2025-06-05",
+          url: "https://www.cnbc.com/2025/06/05/procter-gamble-job-cuts-restructuring.html"
         },
         {
-          title: "P&G Announces Fourth Quarter and Fiscal Year 2025 Results",
+          title: "P&G Q4 2025 earnings",
           date: "2025-07-29",
-          url: "https://us.pg.com/newsroom/news-releases/PG-Announces-Fourth-Quarter-and-Fiscal-Year-2025-Results"
+          url: "https://www.cnbc.com/2025/07/29/procter-gamble-pg-q4-2025-earnings.html"
         }
       ]),
       sources: [
@@ -1102,6 +1102,11 @@ const suppliers = [
           url: "https://apnews.com/article/099737b565480cbb0da59991d5ca88a0"
         },
         {
+          title: "Coca-Cola reports weakening global sales volumes in second quarter (AP via ABC News)",
+          date: "2025-07-22",
+          url: "https://abcnews.go.com/amp/Business/wireStory/coca-cola-reports-weakening-global-sales-volumes-quarter-123951648"
+        },
+        {
           title: "Coca-Cola reports fourth quarter and full year 2025 results",
           date: "2026-02-10",
           url: "https://investors.coca-colacompany.com/news-events/press-releases"
@@ -1182,14 +1187,19 @@ const suppliers = [
       highlights: ["Broad-based growth across core segments.", "Margin recovery continued.", "Capital discipline remained consistent."],
       news: buildNews("Unilever", [
         {
-          title: "Unilever Q3 2025 Trading Statement",
+          title: "Unilever sales lifted by strong consumer demand in North America (Bloomberg)",
           date: "2025-10-23",
-          url: "https://www.investegate.co.uk/announcement/rns/unilever--ulvr/q3-2025-trading-statement/8607229"
+          url: "https://www.bloomberg.com/news/articles/2025-10-23/unilever-sales-beat-estimates-on"
         },
         {
-          title: "Unilever latest results and presentations",
-          date: "2026-02-12",
-          url: "https://www.unilever.com/investors/"
+          title: "Unilever beats sales forecasts amid price hikes, improved demand (Bloomberg)",
+          date: "2025-04-24",
+          url: "https://www.bloomberg.com/news/articles/2025-04-24/unilever-beats-sales-forecasts-amid-price-hikes-improved-demand"
+        },
+        {
+          title: "Unilever (ULVR) earnings Q4, full-year FY24",
+          date: "2025-02-13",
+          url: "https://www.cnbc.com/2025/02/13/unilever-ulvr-earnings-q4-full-year-fy24.html"
         }
       ]),
       sources: [
