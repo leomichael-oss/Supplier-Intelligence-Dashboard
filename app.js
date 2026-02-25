@@ -418,7 +418,7 @@ const suppliers = [
       ],
       news: buildNews("Nestle", [
         { title: "Nestle beats annual sales forecasts but sees margin dropping in 2025", date: "2025-02-13", url: "https://www.reuters.com/world/europe/nestle-annual-sales-slightly-below-forecast-sees-lower-margin-2025-2025-02-13/" },
-        { title: "Nestle to remove synthetic food colors from U.S. food and beverage portfolio", date: "2025-06-25", url: "https://apnews.com/article/nestle-food-colors-artificial-rfk-jr-79765eb339e1f4f7ef4e84fcd59ce5f6" },
+        { title: "Nestle says it will remove artificial dyes from U.S. foods by 2026", date: "2025-06-26", url: "https://apnews.com/article/534843becc89b62d8ac548f81338ec1b" },
         { title: "Nestle sees lower annual organic sales growth after setting straight weak 2024", date: "2026-02-12", url: "https://www.reuters.com/world/europe/nestle-sees-lower-annual-organic-sales-growth-after-setting-straight-weak-2024-2026-02-12/" }
       ]),
       sources: [
@@ -1429,7 +1429,7 @@ const suppliers = [
       grossMarginYoyLabel: "+35 bps",
       highlights: ["Dermocosmetics and premium beauty stayed strong.", "Margin quality remained high.", "Innovation cadence supported share gains."],
       news: buildNews("L'Oreal", [
-        { title: "2025 Annual Results", date: "2026-02-12", url: "https://www.loreal.com/en/press-release/finance/2025-annual-results/" }
+        { title: "L'Oréal 2025 Annual Results", date: "2026-02-12", url: "https://www.loreal.com/en/press-release/finance/2025-annual-results/" }
       ]),
       sources: [
         { label: "L'Oreal Investor Relations", url: "https://www.loreal-finance.com/en/" },
