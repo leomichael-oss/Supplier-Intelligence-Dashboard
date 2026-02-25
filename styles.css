@@ -433,7 +433,9 @@ tr.category-row-clickable:hover {
 .compact-ai-bar .profile-ai-form {
   margin-top: 0;
   width: 100%;
+  min-width: 0;
   align-items: center;
+  grid-template-columns: minmax(0, 1fr) auto;
 }
 
 .profile-ai-form-stacked {
@@ -457,6 +459,8 @@ tr.category-row-clickable:hover {
   background: #fffdf8;
   color: #4f4538;
   font: inherit;
+  width: 100%;
+  min-width: 0;
 }
 
 .profile-ai-form .ghost-btn {
