@@ -417,12 +417,12 @@ const suppliers = [
         "Underlying trading operating profit margin increased to 17.2%."
       ],
       news: buildNews("Nestle", [
-        { title: "Nestle beats annual sales forecasts but sees margin dropping in 2025", date: "2025-02-13", url: "https://news.google.com/search?q=Nestle+annual+sales+margin+2025" },
-        { title: "Nestle to remove synthetic food colors from U.S. food and beverage portfolio", date: "2025-06-25", url: "https://news.google.com/search?q=Nestle+food+colors+artificial+additives" },
-        { title: "Nestle sees lower annual organic sales growth after setting straight weak 2024", date: "2026-02-12", url: "https://news.google.com/search?q=Nestle+organic+sales+growth+2026" }
+        { title: "Nestle beats annual sales forecasts but sees margin dropping in 2025", date: "2025-02-13", url: "https://www.reuters.com/world/europe/nestle-annual-sales-slightly-below-forecast-sees-lower-margin-2025-2025-02-13/" },
+        { title: "Nestle to remove synthetic food colors from U.S. food and beverage portfolio", date: "2025-06-25", url: "https://apnews.com/article/nestle-food-colors-artificial-rfk-jr-79765eb339e1f4f7ef4e84fcd59ce5f6" },
+        { title: "Nestle sees lower annual organic sales growth after setting straight weak 2024", date: "2026-02-12", url: "https://www.reuters.com/world/europe/nestle-sees-lower-annual-organic-sales-growth-after-setting-straight-weak-2024-2026-02-12/" }
       ]),
       sources: [
-        { label: "Nestle Full-Year 2024 Results", url: "https://news.google.com/search?q=Nestle+full+year+2024+results" },
+        { label: "Nestle Full-Year 2024 Results", url: "https://www.nestle.com/media/pressreleases/allpressreleases/full-year-results-2024" },
         { label: "Nestle Market Cap", url: "https://companiesmarketcap.com/nestle/marketcap/" },
         { label: "Nestle Stock Price & 1Y Change", url: "https://companiesmarketcap.com/page/search/?q=nestle" }
       ]
@@ -505,12 +505,12 @@ const suppliers = [
       grossMarginYoyLabel: "-140 bps",
       highlights: ["Net sales declined 3.5% in FY 2025.", "Gross profit margin was 33.3%.", "Productivity remains a central margin lever."],
       news: buildNews("Kraft Heinz", [
-        { title: "Kraft Heinz posts lower annual sales as demand softens", date: "2025-02-12", url: "https://news.google.com/search?q=Kraft+Heinz+annual+profit+forecast+2025" },
-        { title: "Kraft Heinz now expects 2024 net sales at lower end of annual forecast", date: "2024-11-13", url: "https://news.google.com/search?q=Kraft+Heinz+net+sales+forecast+2024" },
-        { title: "Kraft Heinz reports fourth quarter and full year 2025 results", date: "2026-02-11", url: "https://news.google.com/search?q=Kraft+Heinz+fourth+quarter+full+year+2025+results" }
+        { title: "Kraft Heinz posts lower annual sales as demand softens", date: "2025-02-12", url: "https://www.reuters.com/world/us/kraft-heinz-forecasts-annual-profit-below-estimates-2025-02-12/" },
+        { title: "Kraft Heinz now expects 2024 net sales at lower end of annual forecast", date: "2024-11-13", url: "https://www.reuters.com/business/retail-consumer/kraft-heinz-now-expects-2024-net-sales-lower-end-annual-forecast-2024-11-13/" },
+        { title: "Kraft Heinz reports fourth quarter and full year 2025 results", date: "2026-02-11", url: "https://news.kraftheinzcompany.com/press-releases-details/2026/The-Kraft-Heinz-Company-Reports-Fourth-Quarter-and-Full-Year-2025-Results/default.aspx" }
       ]),
       sources: [
-        { label: "Kraft Heinz FY 2025 Results", url: "https://news.google.com/search?q=Kraft+Heinz+FY+2025+results" },
+        { label: "Kraft Heinz FY 2025 Results", url: "https://news.kraftheinzcompany.com/press-releases-details/2026/The-Kraft-Heinz-Company-Reports-Fourth-Quarter-and-Full-Year-2025-Results/default.aspx" },
         { label: "Kraft Heinz Market Cap", url: "https://companiesmarketcap.com/kraft-heinz/marketcap/" },
         { label: "Kraft Heinz Stock Price & 1Y Change", url: "https://companiesmarketcap.com/page/search/?q=kraft+heinz" }
       ]
@@ -593,9 +593,9 @@ const suppliers = [
       grossMarginYoyLabel: "+35 bps",
       highlights: ["Revenue reached $91.854B.", "Gross profit increased year over year.", "Cash generation remains a strategic strength."],
       news: buildNews("PepsiCo", [
-        { title: "PepsiCo forecasts annual profit below estimates as demand for snacks slows", date: "2025-02-04", url: "https://news.google.com/search?q=PepsiCo+annual+profit+forecast+2025" },
-        { title: "PepsiCo beats quarterly profit estimates on robust demand for sugar-free drinks", date: "2025-07-17", url: "https://news.google.com/search?q=PepsiCo+quarterly+profit+2025+sugar-free" },
-        { title: "PepsiCo to buy prebiotic soda brand Poppi in nearly $2 billion deal", date: "2025-03-17", url: "https://news.google.com/search?q=PepsiCo+Poppi+acquisition" }
+        { title: "PepsiCo forecasts annual profit below estimates as demand for snacks slows", date: "2025-02-04", url: "https://www.reuters.com/world/us/pepsico-forecasts-annual-profit-below-estimates-demand-remains-sluggish-2025-02-04/" },
+        { title: "PepsiCo beats quarterly profit estimates on robust demand for sugar-free drinks", date: "2025-07-17", url: "https://www.reuters.com/world/us/pepsico-beats-quarterly-profit-estimates-robust-demand-sugar-free-drinks-2025-07-17/" },
+        { title: "PepsiCo to buy prebiotic soda brand Poppi in nearly $2 billion deal", date: "2025-03-17", url: "https://www.reuters.com/world/us/pepsico-buy-prebiotic-soda-brand-poppi-nearly-2-bln-deal-2025-03-17/" }
       ]),
       sources: [
         { label: "PepsiCo FY 2024 Results", url: "https://investors.pepsico.com/news-events/press-releases/detail/457/pepsico-reports-fourth-quarter-and-full-year-2024-results" },
@@ -672,19 +672,19 @@ const suppliers = [
       highlights: ["Core categories remain stable.", "Productivity offsets inflation.", "Cash returns to shareholders remain strong."],
       news: buildNews("Procter & Gamble", [
         {
-          title: "P&G updates quarterly performance commentary and category outlook",
-          date: "2026-01-23",
-          url: "https://news.google.com/search?q=Procter+%26+Gamble+quarterly+results+2026"
+          title: "P&G Announces Fiscal Year 2026 Second Quarter Results",
+          date: "2026-01-22",
+          url: "https://us.pg.com/newsroom/news-releases/PG-Announces-Fiscal-Year-2026-Second-Quarter-Results"
         },
         {
-          title: "P&G outlines productivity and cost-management priorities for FY 2026",
-          date: "2025-11-19",
-          url: "https://news.google.com/search?q=Procter+%26+Gamble+productivity+cost+management+FY+2026"
+          title: "P&G Announces Fiscal Year 2026 First Quarter Results",
+          date: "2025-10-24",
+          url: "https://us.pg.com/newsroom/news-releases/PG-Announces-Fiscal-Year-2026-First-Quarter-Results"
         },
         {
-          title: "P&G signals portfolio and premiumization focus across core categories",
-          date: "2025-09-23",
-          url: "https://news.google.com/search?q=Procter+%26+Gamble+portfolio+premiumization+2025"
+          title: "P&G Announces Fourth Quarter and Fiscal Year 2025 Results",
+          date: "2025-07-29",
+          url: "https://us.pg.com/newsroom/news-releases/PG-Announces-Fourth-Quarter-and-Fiscal-Year-2025-Results"
         }
       ]),
       sources: [
@@ -1099,7 +1099,7 @@ const suppliers = [
         {
           title: "Coca-Cola fourth-quarter revenue tops expectations",
           date: "2025-02-11",
-          url: "https://news.google.com/search?q=Coca-Cola+earnings+inflation+pricing"
+          url: "https://apnews.com/article/099737b565480cbb0da59991d5ca88a0"
         },
         {
           title: "Coca-Cola reports fourth quarter and full year 2025 results",
@@ -1266,7 +1266,7 @@ const suppliers = [
       grossMarginYoyLabel: "-20 bps",
       highlights: ["Confectionery remained the core growth contributor.", "Margin held despite elevated cocoa cost.", "Promotional intensity stayed disciplined."],
       news: buildNews("Hershey", [
-        { title: "Hershey forecasts annual profit below estimates on weak demand, high cocoa prices", date: "2025-02-06", url: "https://news.google.com/search?q=Hershey+annual+profit+cocoa+prices" },
+        { title: "Hershey forecasts annual profit below estimates on weak demand, high cocoa prices", date: "2025-02-06", url: "https://www.investing.com/news/stock-market-news/hershey-forecasts-lowerthanexpected-2025-profit-on-higher-cocoa-prices-3853700" },
         { title: "Hershey Q4 earnings call materials", date: "2026-02-12", url: "https://investors.thehersheycompany.com/" }
       ]),
       sources: [
@@ -1343,7 +1343,7 @@ const suppliers = [
       grossMarginYoyLabel: "+20 bps",
       highlights: ["Premium assortment maintained growth momentum.", "Mix remained favorable despite cost pressure.", "Seasonal execution was strong."],
       news: buildNews("Lindt", [
-        { title: "Lindt sales growth holds as premium chocolate demand stays resilient", date: "2025-03-05", url: "https://news.google.com/search?q=Lindt+sales+growth+premium+chocolate" }
+        { title: "Lindt & Sprüngli delivers strong performance in Sales, EBIT, and Free Cash Flow", date: "2025-03-04", url: "https://www.lindt-spruengli.com/press-releases-and-news/lindt-sprungli-delivers-strong-performance-in-sales-ebit-and-free-cash-flow-2024/" }
       ]),
       sources: [
         { label: "Lindt Investor Relations", url: "https://www.lindt-spruengli.com/investors/" },
@@ -1419,7 +1419,7 @@ const suppliers = [
       grossMarginYoyLabel: "+35 bps",
       highlights: ["Dermocosmetics and premium beauty stayed strong.", "Margin quality remained high.", "Innovation cadence supported share gains."],
       news: buildNews("L'Oreal", [
-        { title: "L'Oreal posts resilient sales as premium beauty demand holds", date: "2025-02-11", url: "https://news.google.com/search?q=Loreal+sales+premium+beauty" }
+        { title: "2025 Annual Results", date: "2026-02-12", url: "https://www.loreal.com/en/press-release/finance/2025-annual-results/" }
       ]),
       sources: [
         { label: "L'Oreal Investor Relations", url: "https://www.loreal-finance.com/en/" },
@@ -1495,8 +1495,8 @@ const suppliers = [
       grossMarginYoyLabel: "+25 bps",
       highlights: ["Consumer health demand remained durable.", "Margin profile stayed stable.", "Portfolio investments focused on core brands."],
       news: buildNews("Kenvue", [
-        { title: "Kenvue forecasts annual profit below estimates on cautious consumer spending", date: "2025-02-06", url: "https://news.google.com/search?q=Kenvue+annual+profit+forecast" },
-        { title: "Kenvue investor relations updates", date: "2026-02-12", url: "https://www.kenvue.com/" }
+        { title: "Kenvue stock slides after missing Q4 estimates", date: "2025-02-06", url: "https://www.investing.com/news/stock-market-news/kenvue-stock-slides-after-missing-q4-estimates-3853307" },
+        { title: "Kenvue Reports Fourth Quarter and Full Year 2025 Results", date: "2026-02-17", url: "https://investors.kenvue.com/financial-news/news-details/2026/Kenvue-Reports-Fourth-Quarter-and-Full-Year-2025-Results" }
       ]),
       sources: [
         { label: "Kenvue Investor Relations", url: "https://www.kenvue.com/" },
