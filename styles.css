@@ -402,6 +402,7 @@ tr.category-row-clickable:hover {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: stretch;
 }
 
 .profile-ai-header {
@@ -469,19 +470,23 @@ tr.category-row-clickable:hover {
   border-radius: 10px;
 }
 
-.ai-answer-collapsed {
+.profile-ai-answer.ai-answer-collapsed {
+  display: none;
   max-height: 0;
   opacity: 0;
   overflow: hidden;
   margin-top: 0;
   padding-top: 0;
   padding-bottom: 0;
+  padding-left: 0;
+  padding-right: 0;
   border-width: 0;
   transform: translateY(-6px);
   transition: max-height 180ms ease, opacity 140ms ease, transform 180ms ease, margin-top 180ms ease, padding 180ms ease, border-width 180ms ease;
 }
 
-.ai-answer-visible {
+.profile-ai-answer.ai-answer-visible {
+  display: block;
   max-height: 280px;
   opacity: 1;
   transform: translateY(0);
