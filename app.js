@@ -2931,7 +2931,15 @@ function itemsWithinDays(items = [], days = 183, maxItems = 10) {
 }
 
 function buildSupplierMentions(supplier, days = 183, maxItems = 20) {
-  const fromNews = itemsWithinDays(supplier.external.news || [], days, 50).map((item) => ({
+  const recentNewsItems = itemsWithinDays(supplier.external.news || [], days, 50);
+  const fallbackNewsItems =
+    recentNewsItems.length >= 3
+      ? []
+      : sortByRecency(supplier.external.news || []).filter(
+          (item) => item?.url && item?.date && !recentNewsItems.some((x) => x.url === item.url)
+        );
+
+  const fromNews = [...recentNewsItems, ...fallbackNewsItems].map((item) => ({
     type: "news",
     title: item.title || item.summary || `${supplier.name} mention`,
     summary: item.summary || "",
