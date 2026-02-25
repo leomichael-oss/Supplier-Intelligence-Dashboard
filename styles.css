@@ -395,6 +395,9 @@ tr.category-row-clickable:hover {
   position: relative;
   top: auto;
   z-index: 5;
+  display: flex;
+  align-items: center;
+  min-height: 78px;
 }
 
 #profile-quick-ai-bar {
@@ -431,6 +434,8 @@ tr.category-row-clickable:hover {
 
 .compact-dashboard-ai .profile-ai-form {
   margin-top: 0;
+  width: 100%;
+  align-items: center;
 }
 
 .profile-ai-form-stacked {
