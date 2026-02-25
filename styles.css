@@ -402,7 +402,6 @@ tr.category-row-clickable:hover {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 78px;
 }
 
 .profile-ai-header {
