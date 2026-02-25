@@ -2974,11 +2974,23 @@ function buildExternalEsgStories(supplier, external) {
   const profile = ESG_LIBRARY[supplier.id];
   if (profile && profile.stories && profile.stories.length) {
     const recentProfileStories = itemsWithinDays(profile.stories, 183, 5);
-    if (recentProfileStories.length) return recentProfileStories;
+    if (recentProfileStories.length >= 2) return recentProfileStories;
+    const fallbackProfileStories = sortByRecency(profile.stories)
+      .filter((item) => item?.url && item?.date && !recentProfileStories.some((x) => x.url === item.url))
+      .slice(0, 5);
+    if (recentProfileStories.length || fallbackProfileStories.length) {
+      return [...recentProfileStories, ...fallbackProfileStories].slice(0, 5);
+    }
   }
   if (external.esg && external.esg.length) {
     const recentExternalEsg = itemsWithinDays(external.esg, 183, 5);
-    if (recentExternalEsg.length) return recentExternalEsg;
+    if (recentExternalEsg.length >= 2) return recentExternalEsg;
+    const fallbackExternalEsg = sortByRecency(external.esg)
+      .filter((item) => item?.url && item?.date && !recentExternalEsg.some((x) => x.url === item.url))
+      .slice(0, 5);
+    if (recentExternalEsg.length || fallbackExternalEsg.length) {
+      return [...recentExternalEsg, ...fallbackExternalEsg].slice(0, 5);
+    }
   }
 
   const esgFromNews = itemsWithinDays(external.news || [], 183, 20)
